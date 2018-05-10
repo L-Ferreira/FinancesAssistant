@@ -27,10 +27,17 @@
 
     <div class="content">
         <div class="title m-b-md">
-            Finances Assistant
+            <h1>Finances Assistant</h1>
+
+            <h3>Welcome Ainet Project</h3>
         </div>
-
-
+        <div class="midlle estatistics">
+            <div align="center">
+                <div>Total of registered users {{$results_users}}</div>
+                <div>Total number of accounts: {{$results_accounts}}</div>
+                <div>Movements registered of plataform: {{$results_movements}}</div>
+            </div>
+        </div>
     </div>
 </div>
 </body>
