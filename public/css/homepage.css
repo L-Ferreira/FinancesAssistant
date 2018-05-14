@@ -31,8 +31,12 @@ html, body {
     position: center;
     left: 10px;
     top: 18px;
-    font-size: 20px;
-    font-family: Didot,serif ;
+    font-size: 23px;
+    font-family:  "Arial ",Sans-serif ;
+    font-weight: 100;
+    border: 1px solid black;
+    padding: 35px;
+    background-color: #b9bbbe;
 }
 
 .estatistics {
@@ -61,4 +65,16 @@ html, body {
 
 .m-b-md {
     margin-bottom: 30px;
+}
+
+h1{
+    text-shadow: 2px 2px 4px black;
+}
+
+
+input[type=text] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
 }
