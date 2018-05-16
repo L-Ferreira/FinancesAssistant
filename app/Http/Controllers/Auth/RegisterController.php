@@ -55,7 +55,6 @@ class RegisterController extends Controller
             'password' => 'required|string|min:3|confirmed',
             'phone' => 'nullable|regex:/^[0-9 +\s]+$/',
             'profile_photo' => 'nullable|mimes:jpeg,jpg,png',
-
         ]);
     }
 
@@ -68,13 +67,13 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         $request = request();
-        if ($request->hasFile('profile_photo')){
+        if ($request->hasFile('profile_photo') && $request->hasFile('profile_photo')){
             return User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),
                 'phone' => $data['phone'] ?? null,
-                'profile_photo' => ($request->file('profile_photo')->store('')),
+                'profile_photo' => basename($request->file('profile_photo')->store('profiles', 'public')) ?? null,
             ]);
         }
 
