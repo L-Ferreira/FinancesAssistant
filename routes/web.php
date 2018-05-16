@@ -19,4 +19,8 @@ Auth::routes();
 
 Route::get('/', 'UserController@showInitialStatistics')->name('user');
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/users', 'UserController@showUsers')->name('showUsers')->middleware(['auth', 'admin']);
+Route::get('/users', 'UserController@showUsers')->name('showUsers');//->middleware(['auth', 'admin'])
+Route::patch('/users/{user}/block', 'AdminController@block');
+Route::patch('/users/{user}/unblock', 'AdminController@unblock');
+Route::patch('/users/{user}/promote', 'AdminController@promote');
+Route::patch('/users/{user}/demote', 'AdminController@demote');
