@@ -19,4 +19,11 @@ class UserController extends Controller
 
         return view('welcome',compact('results_users','results_accounts','results_movements'));
     }
+
+    public function showUsers()
+    {
+        $pagetitle = "List Users";
+        $users = User::all();
+        return view('showUsers', compact('pagetitle', 'users'));
+    }
 }
