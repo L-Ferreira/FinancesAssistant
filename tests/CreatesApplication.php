@@ -26,6 +26,7 @@ trait CreatesApplication
         TestResponse::macro('assertSessionHasNoErrors', function ($keys = [], $format = null, $errorBag = 'default') {
             $bag = app('session.store')->get('errors');
             if (is_null($bag)) {
+                PHPUnit::assertTrue(true);
                 return $this;
             }
 
@@ -52,6 +53,13 @@ trait CreatesApplication
             return $this;
         });
 
+        TestResponse::macro('assertPatternCount', function ($pattern, $occorrences = 1, $message = '') {
+            $haystack = \mb_strtolower($this->getContent());
+            PHPUnit::assertEquals($occorrences, preg_match_all($pattern, $haystack), $message);
+
+            return $this;
+        });
+
         TestResponse::macro('assertDontSeeAll', function ($strings, $message = null) {
             try {
                 foreach ($strings as $string) {
@@ -71,6 +79,14 @@ trait CreatesApplication
             } catch (ExpectationFailedException $e) {
                 throw new ExpectationFailedException($message ?? $e->getMessage(), $e->getComparisonFailure());
             }
+            return $this;
+        });
+
+        TestResponse::macro('assertSuccessfulOrRedirect', function() {
+            PHPUnit::assertTrue(
+                $this->isSuccessful() || $this->isRedirect(),
+                'Response status code ['.$this->getStatusCode().'] is not a successful status code.'
+            );
             return $this;
         });
         return $app;
