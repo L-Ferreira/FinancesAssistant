@@ -67,7 +67,7 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         $request = request();
-        if ($request->hasFile('profile_photo') && $request->hasFile('profile_photo')){
+        if ($request->hasFile('profile_photo') && $request->file('profile_photo')->isValid()){
             return User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],

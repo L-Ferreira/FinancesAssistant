@@ -26,4 +26,29 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function getFormattedTypeAttribute()
+    {
+        switch ($this->type) {
+            case '0':
+                return 'Administrator';
+            case '1':
+                return 'NormalUser';
+        }
+
+        return 'Unknown';
+    }
+
+    public function isAdmin()
+    {
+        return $this->type == '0';
+    }
+
+    public function isNormalUser()
+    {
+        return $this->type == '1';
+    }
+
+
+
 }

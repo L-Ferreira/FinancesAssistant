@@ -78,3 +78,7 @@ input[type=text] {
     margin: 8px 0;
     box-sizing: border-box;
 }
+
+.img-circle{
+    border-radius: 50%;
+}
