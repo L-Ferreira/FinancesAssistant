@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\User;
 use App\Accounts;
@@ -94,7 +95,7 @@ class UserController extends Controller
     public function showUsers(Request $request)
     {
 
-        //sdd($request);
+
 
         $pageTitle = "List Users";
         $users = User::all();
@@ -103,55 +104,26 @@ class UserController extends Controller
         $type = $request->type;
         $status = $request->status;
 
-
+        $query = User::query();
 
         if($type == 'admin'){
-            $type = 1;
-        }
-
-
-        if($type == 'normal'){
-            $type = 0;
+            $query = $query->where('admin',true);
+        }else if($type == 'normal'){
+            $query = $query->where('admin',false);
         }
 
         if($status == 'blocked'){
-            $status = 1;
-
+            $query = $query->where('blocked',true);
+        }else if($status == 'unblocked'){
+            $query = $query->where('blocked',false);
         }
 
-
-        if($status == 'unblocked'){
-            $status = 0;
-
-
-        }
 
         if ($request->has('name')) {
-            $users = User::query()->where('name', 'LIKE', '%' .$name . '%')->get();
+            $query = $query->where('name', 'LIKE', '%' .$name . '%');
         }
 
-
-        if ($request->has('type')) {
-            $users = User::query()->where('admin', 'LIKE', $type)->get();
-        }
-
-        if ($request->has('status')) {
-            $users = User::query()->where('blocked', '=', $status)->get();
-        }
-
-
-        if ($request->has('type') && $request->has('name')) {
-            $users= User::query()->where('admin','=',$type)->where('name', 'LIKE', '%' .$name . '%')->get();
-        }
-
-
-        if ($request->has('name') && $request->has('status')) {
-            $users= User::query()->where('name','LIKE','%' .$name . '%')->where('blocked', '=', $status)->get();
-        }
-
-        if ($request->has('name') && $request->has('status') &&  $request->has('type')) {
-            $users= User::query()->where('name','LIKE','%' .$name . '%')->where('blocked', '=', $status)->where('admin','=',$type)->get();
-        }
+        $users = $query->get();
 
         return view('showUsers', compact('pageTitle', 'users'));
 
