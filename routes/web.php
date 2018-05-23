@@ -31,8 +31,7 @@ Route::get('/me','UserController@profile')->name('me');
 //EDIT PROFILE
 Route::get('/me/profile','UserController@edit')->name('me.edit');
 Route::put('/me/profile', 'UserController@update')->name('me.update');
-Route::post('/me/profile', 'UserController@profilePhotoUpload')->name('me.photo.upload');
-//EDIT PASSWORD
-Route::get('/me/password/{id}','UserController@editPassword')->name('me.editPassword');
-Route::put('/me/password/{id}', 'UserController@updatePassword')->name('me.updatePassword');
+//
+Route::get('/me/password','UserController@editPassword')->name('me.editPassword');
+Route::patch('/me/password', 'UserController@updatePassword')->name('me.updatePassword');
 

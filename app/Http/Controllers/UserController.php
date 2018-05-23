@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Rules\OldPassword;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -11,7 +12,10 @@ use App\Movements;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image;
 
 class UserController extends Controller
@@ -65,6 +69,10 @@ class UserController extends Controller
             $user->save();
         }
 
+        if (!$request->has('phone')) {
+            $user->phone = null;
+        }
+
         $user->save();
 
         return redirect()
@@ -75,21 +83,27 @@ class UserController extends Controller
     public function editPassword(User $user)
     {
         $user = Auth::user();
-        return view('users.password', compact('user'));
+        return view('users.password');
     }
 
-    public function updatePassword(UpdateUserRequest $request, User $user)
+    public function updatePassword(Request $request)
     {
-        $this->authorize('edit', $user);
+        $this->validate($request, [
+            'old_password' => [new OldPassword(), 'required'],
+            'password' => 'required|string|min:3|confirmed',
+        ]);
 
-        $data = $request->validated();
+        $user = Auth::user();
 
-        $user->fill($data);
+        $password = bcrypt($request['password']);
+        $user->password = $password;
+
         $user->save();
 
         return redirect()
             ->route('me')
             ->with('success', 'User saved successfully');
+
     }
 
     public function showUsers(Request $request)

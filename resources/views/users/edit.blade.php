@@ -15,7 +15,7 @@
                                 <a class="nav-link active" href="{{route('me.edit')}}">Edit Profile</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{route('me.updatePassword', Auth::user())}}">Change Password</a>
+                                <a class="nav-link" href="{{route('me.editPassword')}}">Change Password</a>
                             </li>
                         </ul>
                     </div>
@@ -61,6 +61,7 @@
                                 <button type="submit" class="btn btn-success" name="ok">Save</button>
                                 <a class="btn btn-default " href="{{route('me')}}">Cancel</a>
                             </div>
+
                         </form>
                     </div>
                 </div>
