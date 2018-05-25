@@ -37,6 +37,16 @@
                     <ul class="navbar-nav mr-auto">
 
                     </ul>
+                    @if(Route::current()->getName() == 'home' || Route::current()->getName() == 'profiles')
+                    <ul class="navbar-nav ">
+                        <form action="{{ route('profiles') }}" method="get" class="navbar-form navbar-left">
+                            <div class="input-group custom-search-form">
+                                <input type="text" name="name" class="form-control" placeholder="Search registered users" style="width: 600px">
+                            </div>
+                        </form>
+                    </ul>
+                    @endif
+
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -52,6 +62,9 @@
                                 </a>
 
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href={{ route('home')}}>
+                                        {{ __('Home') }}
+                                    </a>
                                     <a class="dropdown-item" href={{ route('me')}}>
                                         {{ __('Profile') }}
                                     </a>

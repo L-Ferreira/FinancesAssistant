@@ -20,9 +20,9 @@
                             </div>
 
                             <div class="p-2">
-                                {{--@can('edit', $user)--}}
+                                @can('edit', Auth::user())
                                     <a class="btn btn-xs btn-primary" href="{{route('me.edit')}}">Edit</a>
-                                {{--@endcan--}}
+                                @endcan
                             </div>
 
 

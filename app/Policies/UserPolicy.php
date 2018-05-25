@@ -23,4 +23,8 @@ class UserPolicy
     {
         return $user->admin == 1;
     }
+
+    public function edit(User $user, User $userToEdit) {
+        return $user->id === $userToEdit->id;
+    }
 }

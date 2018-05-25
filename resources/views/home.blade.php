@@ -6,4 +6,5 @@
             <a type="button" class="btn btn-primary" href="{{ route('showUsers') }}">Show Users</a>
         @endcan
     </div>
+
 @endsection

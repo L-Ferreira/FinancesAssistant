@@ -22,8 +22,9 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+//        $this->middleware('auth');
     }
+
 
     public function showInitialStatistics(){
 
@@ -37,6 +38,7 @@ class UserController extends Controller
         return view('welcome',compact('results_users','results_accounts','results_movements'));
     }
 
+
     public function profile()
     {
         $user = Auth::user();
@@ -46,8 +48,8 @@ class UserController extends Controller
 
     public function edit()
     {
-//        $this->authorize('edit', $user);
         $user = Auth::user();
+        $this->authorize('edit', $user);
         return view('users.edit');
     }
 
@@ -55,6 +57,7 @@ class UserController extends Controller
     {
         //$this->authorize('edit', $user);
         $user = Auth::user();
+        $this->authorize('edit', $user);
         $data = $request->validated();
 
         $user->fill($data);
@@ -106,41 +109,6 @@ class UserController extends Controller
 
     }
 
-    public function showUsers(Request $request)
-    {
 
-
-
-        $pageTitle = "List Users";
-        $users = User::all();
-
-        $name = $request->name;
-        $type = $request->type;
-        $status = $request->status;
-
-        $query = User::query();
-
-        if($type == 'admin'){
-            $query = $query->where('admin',true);
-        }else if($type == 'normal'){
-            $query = $query->where('admin',false);
-        }
-
-        if($status == 'blocked'){
-            $query = $query->where('blocked',true);
-        }else if($status == 'unblocked'){
-            $query = $query->where('blocked',false);
-        }
-
-
-        if ($request->has('name')) {
-            $query = $query->where('name', 'LIKE', '%' .$name . '%');
-        }
-
-        $users = $query->get();
-
-        return view('showUsers', compact('pageTitle', 'users'));
-
-    }
 
 }
