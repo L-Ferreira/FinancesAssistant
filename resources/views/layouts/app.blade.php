@@ -66,7 +66,7 @@
                                         {{ __('Home') }}
                                     </a>
                                     <a class="dropdown-item" href={{ route('me')}}>
-                                        {{ __('Profile') }}
+                                        {{ __('My Profile') }}
                                     </a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();

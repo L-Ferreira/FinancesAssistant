@@ -6,21 +6,26 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>Fullname</th>
-                    <th>Picture</th>
+                    <th scope="col">Picture</th>
+                    <th scope="col">Fullname</th>
+                    <th scope="col">Profile</th>
                 </tr>
                 </thead>
-                @foreach ($users as $user)
-
+                <tbody>
+                    @foreach ($users as $user)
                     <tr>
+                        <td width="80px">
+                            @include('partials.img', ['photo' =>$user->profile_photo, 'size'=> 50])
+                        </td>
                         <td class="border-left">
-                            {{ $user->name}}
+                            {{$user->name}}
                         </td>
                         <td>
-                            @include('partials.img', ['photo' =>$user->profile_photo, 'size'=> 50]);
+                            <a class="btn btn-xs btn-primary" href="{{route('usersProfile', $user->id)}}">Show Profile</a>
                         </td>
                     </tr>
-                @endforeach
+                    @endforeach
+                </tbody>
             </table>
         @else
             <div class="align-content-center">

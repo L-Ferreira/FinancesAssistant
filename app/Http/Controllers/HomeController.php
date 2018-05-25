@@ -82,8 +82,7 @@ class HomeController extends Controller
         }else if($status == 'unblocked'){
             $query = $query->where('blocked',false);
         }
-
-
+        
         if ($request->has('name')) {
             $query = $query->where('name', 'LIKE', '%' .$name . '%');
         }

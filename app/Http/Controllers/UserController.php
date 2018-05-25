@@ -39,17 +39,23 @@ class UserController extends Controller
     }
 
 
-    public function profile()
+    public function myProfile()
     {
         $user = Auth::user();
+        return view('profile', compact('user'));
+    }
 
+    public function usersProfile($id)
+    {
+        $user = User::find($id);
         return view('profile', compact('user'));
     }
 
     public function edit()
     {
-        $user = Auth::user();
-        $this->authorize('edit', $user);
+//        $user = Auth::user();
+//        dd($user);
+//        $this->authorize('edit', $user);
         return view('users.edit');
     }
 

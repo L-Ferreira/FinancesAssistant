@@ -28,7 +28,7 @@ Route::patch('/users/{user}/promote', 'AdminController@promote');
 Route::patch('/users/{user}/demote', 'AdminController@demote');
 
 //USER PROFILE
-Route::get('/me','UserController@profile')->name('me');
+Route::get('/me','UserController@myProfile')->name('me');
 //EDIT PROFILE
 Route::get('/me/profile','UserController@edit')->name('me.edit')->middleware('auth');
 Route::put('/me/profile', 'UserController@update')->name('me.update')->middleware('auth');
@@ -38,5 +38,6 @@ Route::patch('/me/password', 'UserController@updatePassword')->name('me.updatePa
 
 //USER PROFILES
 Route::get('/profiles', 'HomeController@showProfiles')->name('profiles');
+Route::get('/users/{id}', 'UserController@usersProfile')->name('usersProfile');
 
 
