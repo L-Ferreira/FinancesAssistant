@@ -19,7 +19,19 @@
                         </td>
                         <td class="border-left">
                             {{$user->name}}
+                            @foreach ($associates as $associate)
+                                @if($associate->main_user_id == Auth::user()->id && $user->id == $associate->associated_user_id)
+                                    <div class="badge badge-secondary">
+                                        <span>Associate</span>
+                                    </div>
+                                @elseif($associate->main_user_id == $user->id && Auth::user()->id == $associate->associated_user_id)
+                                    <div class="badge badge-secondary">
+                                        <span>Associate-of</span>
+                                    </div>
+                                @endif
+                            @endforeach
                         </td>
+
                         <td>
                             <a class="btn btn-xs btn-primary" href="{{route('usersProfile', $user->id)}}">Show Profile</a>
                         </td>

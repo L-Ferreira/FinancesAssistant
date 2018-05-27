@@ -49,6 +49,4 @@ class User extends Authenticatable
         return $this->type == '1';
     }
 
-
-
 }
