@@ -32,8 +32,8 @@
                             @endforeach
                         </td>
 
-                        <td>
-                            <a class="btn btn-xs btn-primary" href="{{route('usersProfile', $user->id)}}">Show Profile</a>
+                        <td style="width: 200px">
+                            <a class="btn btn-xs btn-primary" href="{{route('usersProfile', $user->id)}}" style="width: 200px">Show Profile</a>
                         </td>
                     </tr>
                     @endforeach

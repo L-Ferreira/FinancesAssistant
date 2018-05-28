@@ -35,7 +35,10 @@ Route::put('/me/profile', 'UserController@update')->name('me.update')->middlewar
 //EDIT PASSWORD
 Route::get('/me/password','UserController@editPassword')->name('me.editPassword')->middleware('auth');
 Route::patch('/me/password', 'UserController@updatePassword')->name('me.updatePassword')->middleware('auth');
-
+//ASSOCIATES
+Route::get('/me/associates','UserController@associates')->name('me.associates')->middleware('auth');
+//ASSOCIATES-OF
+Route::get('/me/associates-of','UserController@associatesOf')->name('me.associatesOf')->middleware('auth');
 //USER PROFILES
 Route::get('/profiles', 'HomeController@showProfiles')->name('profiles');
 Route::get('/users/{id}', 'UserController@usersProfile')->name('usersProfile');

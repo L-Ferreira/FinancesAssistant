@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\AssociateMembers;
 use App\Rules\OldPassword;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Model;
@@ -116,5 +117,26 @@ class UserController extends Controller
     }
 
 
+    public function associates()
+    {
+        $user = Auth::user();
+        $users = DB::table('users')
+            ->join('associate_members', 'users.id', '=', 'associate_members.associated_user_id')
+            ->select('users.*')
+            ->where([['associate_members.main_user_id', '=', $user->id]])
+            ->get();
+        return view('associates', compact('user', 'users'));
+    }
+
+    public function associatesOf()
+    {
+       $user = Auth::user();
+       $users = DB::table('users')
+            ->join('associate_members', 'users.id', '=', 'associate_members.main_user_id')
+            ->select('users.*')
+            ->where([['associate_members.associated_user_id', '=', $user->id]])
+            ->get();
+       return view('associates', compact('user', 'users'));
+    }
 
 }
