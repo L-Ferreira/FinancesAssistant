@@ -7,4 +7,4 @@
         @endcan
         <a  class="btn btn-primary" href="{{ route('showAccounts',Auth::user()) }}">Show Accounts</a>
     </div>
-@endsection\
+@endsection
