@@ -22,10 +22,10 @@ Route::get('/', 'UserController@showInitialStatistics')->name('user');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/users', 'HomeController@showUsers')->name('showUsers')->middleware(['auth','admin']);
 
-Route::patch('/users/{user}/block', 'AdminController@block');
-Route::patch('/users/{user}/unblock', 'AdminController@unblock');
-Route::patch('/users/{user}/promote', 'AdminController@promote');
-Route::patch('/users/{user}/demote', 'AdminController@demote');
+Route::patch('/users/{user}/block', 'UserController@block')->name('block')->middleware('admin');
+Route::patch('/users/{user}/unblock', 'UserController@unblock')->name('unblock')->middleware('admin');
+Route::patch('/users/{user}/promote', 'UserController@promote')->name('promote')->middleware('admin');
+Route::patch('/users/{user}/demote', 'UserController@demote')->name('demote')->middleware('admin');
 
 //USER PROFILE
 Route::get('/me','UserController@myProfile')->name('me');

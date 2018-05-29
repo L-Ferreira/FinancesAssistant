@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\AssociateMembers;
 use App\Rules\OldPassword;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\User;
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Intervention\Image\Facades\Image;
+//use Intervention\Image\Facades\Image;
 
 class UserController extends Controller
 {
@@ -137,6 +138,54 @@ class UserController extends Controller
             ->where([['associate_members.associated_user_id', '=', $user->id]])
             ->get();
        return view('associates', compact('user', 'users'));
+    }
+
+    public function block($id)
+    {
+        //$this->authorize('deny', $id);
+        $user = User::findOrFail($id);
+
+        if ($user->blocked == 0)
+        {
+                $user->blocked = 1;
+        }
+        $user->save();
+        return redirect()->back()->with('success', 'User blocked with success!');
+
+    }
+
+    public function unblock($id)
+    {
+
+        $user = User::findOrFail($id);
+        if ($user->blocked == 1)
+        {
+            $user->blocked = 0;
+        }
+        $user->save();
+        return redirect()->back()->with('success', 'User unblocked with success!');
+    }
+
+    public function promote($id)
+    {
+        $user = User::findOrFail($id);
+        if ($user->admin == 0)
+        {
+            $user->admin = 1;
+        }
+        $user->save();
+        return redirect()->back()->with('success', 'User promoted with success!');
+    }
+
+    public function demote($id)
+    {
+        $user = User::findOrFail($id);
+        if ($user->admin == 1)
+        {
+            $user->admin = 0;
+        }
+        $user->save();
+        return redirect()->back()->with('success', 'User demoted with success!');
     }
 
 }
