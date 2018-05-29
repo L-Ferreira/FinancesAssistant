@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Ainet\Models\User;
+use App\Accounts;
+use App\Policies\AccountsPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -18,6 +20,7 @@ class AuthServiceProvider extends ServiceProvider
 
         'App\User' => 'App\Policies\UserPolicy',
         User::class => UserPolicy::class,
+        Accounts::class => AccountsPolicy::class,
 
     ];
 

@@ -6,6 +6,7 @@ use App\Accounts;
 use App\User;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -49,7 +50,7 @@ class AccountController extends Controller
                 ->where('accounts.owner_id','=',$user)
                 ->where('accounts.deleted_at','=',NULL)->get();
         }else{
-            abort(404,'Invalid User');
+            return response(view('errors.404'),404);
         }
 
         if($user == Auth::user()->id) {
@@ -70,7 +71,7 @@ class AccountController extends Controller
                 ->where('accounts.owner_id','=',$user)
                 ->where('accounts.deleted_at','!=',NULL)->get();
         }else{
-            abort(404,'Invalid User');
+            return response(view('errors.404'),404);
         }
 
         if($user == Auth::user()->id) {
@@ -78,5 +79,45 @@ class AccountController extends Controller
         }else{
             return response(view('errors.403'),403);
         }
+    }
+
+    public function destroy(Accounts $account){
+        $this->authorize('delete',$account);
+
+        $account->delete();
+
+        return redirect()->route('showAccounts', Auth::user())->with('success','User deleted successfully');
+    }
+
+    public function close(Accounts $account){
+        $this->authorize('close',$account);
+
+        $count = Accounts::query()->where('id','=',$account->id)->count();
+
+        if($count > 0){
+            $account->deleted_at = Carbon::now();
+        }else{
+            return response(view('errors.404'),404);
+        }
+
+        $account->save();
+
+        return redirect()->route('showAccounts', Auth::user())->with('success','Account closed');
+    }
+
+    public function reopen(Accounts $account){
+        $this->authorize('reopen',$account);
+
+        $count = Accounts::query()->where('id','=',$account->id)->count();
+
+        if($count > 0){
+            $account->deleted_at = null;
+        }else{
+            return response(view('errors.404'),404);
+        }
+
+        $account->save();
+
+        return redirect()->route('showAccounts', Auth::user())->with('success','Account reopen');
     }
 }

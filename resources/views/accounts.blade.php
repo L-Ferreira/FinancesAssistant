@@ -20,6 +20,39 @@
                             <td>{{ $account->code}}</td>
                             <td>{{ $account->name}}</td>
                             <td>{{ $account->current_balance }}</td>
+                            <td>
+                                @if( is_null($account->last_movement_date))
+                                    @can('delete',$account)
+                                        <form action="{{route('accounts.destroy',$account->id)}}" method="POST" role="form" class="inline">
+                                            @method('delete')
+                                            @csrf
+                                            <button type="submit" class="btn btn-xs btn-danger">Delete</button>
+                                        </form>
+                                    @endcan
+                                @endif
+                            </td>
+                            <td>
+                                @if(is_null($account->deleted_at))
+                                    @can('close',$account)
+                                        <form action="{{route('close',$account->id)}}" method="POST" role="form" class="inline">
+                                            @method('patch')
+                                            @csrf
+                                            <button type="submit" class="btn btn-xs btn-danger">Close</button>
+                                        </form>
+                                    @endcan
+                                @endif
+                            </td>
+                            <td>
+                                @if($account->deleted_at != null)
+                                    @can('reopen',$account)
+                                        <form action="{{route('reopen',$account->id)}}" method="POST" role="form" class="inline">
+                                            @method('patch')
+                                            @csrf
+                                            <button type="submit" class="btn btn-xs btn-danger">Reopen</button>
+                                        </form>
+                                    @endcan
+                                @endif
+                            </td>
                         </tr>
                     @endforeach
             </table>

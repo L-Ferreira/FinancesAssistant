@@ -20,7 +20,7 @@ Auth::routes();
 Route::get('/', 'UserController@showInitialStatistics')->name('user');
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/users', 'HomeController@showUsers')->name('showUsers');
+Route::get('/users', 'HomeController@showUsers')->name('showUsers')->middleware(['auth','admin']);
 
 Route::patch('/users/{user}/block', 'AdminController@block');
 Route::patch('/users/{user}/unblock', 'AdminController@unblock');
@@ -35,13 +35,20 @@ Route::put('/me/profile', 'UserController@update')->name('me.update')->middlewar
 //EDIT PASSWORD
 Route::get('/me/password','UserController@editPassword')->name('me.editPassword')->middleware('auth');
 Route::patch('/me/password', 'UserController@updatePassword')->name('me.updatePassword')->middleware('auth');
-
+//ASSOCIATES
+Route::get('/me/associates','UserController@associates')->name('me.associates')->middleware('auth');
+//ASSOCIATES-OF
+Route::get('/me/associates-of','UserController@associatesOf')->name('me.associatesOf')->middleware('auth');
 //USER PROFILES
 Route::get('/profiles', 'HomeController@showProfiles')->name('profiles');
 Route::get('/users/{id}', 'UserController@usersProfile')->name('usersProfile');
-
 
 //USERS ACCOUNTS
 Route::get('/accounts/{user}', 'AccountController@showAccounts')->name('showAccounts');
 Route::get('/accounts/{user}/opened', 'AccountController@showAccountsOpened')->name('account.opened');
 Route::get('/accounts/{user}/closed', 'AccountController@showAccountsClosed')->name('account.closed');
+
+//SPECIFIED ACCOUNT
+Route::delete('/account/{account}', 'AccountController@destroy')->name('accounts.destroy');
+Route::patch('/account/{account}/close','AccountController@close')->name('close');
+Route::patch('/account/{account}/reopen','AccountController@reopen')->name('reopen');
