@@ -142,13 +142,21 @@ class UserController extends Controller
 
     public function block($id)
     {
-        //$this->authorize('deny', $id);
+
         $user = User::findOrFail($id);
 
-        if ($user->blocked == 0)
-        {
+        if($user->admin){
+            return response(view('errors.403'),403);
+        }else{
+            if ($user->blocked == 0)
+            {
                 $user->blocked = 1;
+            }
         }
+
+
+
+
         $user->save();
         return redirect()->back()->with('success', 'User blocked with success!');
 
@@ -157,10 +165,15 @@ class UserController extends Controller
     public function unblock($id)
     {
 
+
         $user = User::findOrFail($id);
-        if ($user->blocked == 1)
-        {
-            $user->blocked = 0;
+
+        if($user->admin){
+            return response(view('errors.403'),403);
+        }else {
+            if ($user->blocked == 1) {
+                $user->blocked = 0;
+            }
         }
         $user->save();
         return redirect()->back()->with('success', 'User unblocked with success!');
@@ -169,6 +182,8 @@ class UserController extends Controller
     public function promote($id)
     {
         $user = User::findOrFail($id);
+
+
         if ($user->admin == 0)
         {
             $user->admin = 1;
@@ -180,10 +195,15 @@ class UserController extends Controller
     public function demote($id)
     {
         $user = User::findOrFail($id);
-        if ($user->admin == 1)
-        {
-            $user->admin = 0;
+
+        if($user->admin && Auth::user()->id == $id){
+            return response(view('errors.403'),403);
+        }else {
+            if ($user->admin == 1) {
+                $user->admin = 0;
+            }
         }
+
         $user->save();
         return redirect()->back()->with('success', 'User demoted with success!');
     }

@@ -21,14 +21,14 @@ class AccountsPolicy
     }
 
     public function delete(User $user, Accounts $account){
-        return $user->id === $account->owner_id;
+        return $user->id == $account->owner_id;
     }
 
     public function close(User $user, Accounts $account){
-        return $user->id === $account->owner_id || $user->admin;
+        return $user->id == $account->owner_id || $user->admin;
     }
 
     public function reopen(User $user, Accounts $account){
-        return $user->id === $account->owner_id || $user->admin;
+        return $user->id == $account->owner_id || $user->admin;
     }
 }
