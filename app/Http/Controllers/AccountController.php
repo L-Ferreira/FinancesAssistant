@@ -86,7 +86,19 @@ class AccountController extends Controller
     public function destroy(Accounts $account){
         $this->authorize('delete',$account);
 
-        $account->delete();
+        $count = Movements::query()->where('account_id','=',$account->id)->count();
+
+        if(!Auth::user()->admin || Auth::user()->admin) {
+            if ($count == 0 && is_null($account->last_movement_date)) {
+
+                $account->delete();
+            } else {
+                return response(view('errors.403'), 403);
+            }
+        }else {
+            return response(view('errors.403'),403);
+
+        }
 
         return redirect()->route('showAccounts', Auth::user())->with('success','User deleted successfully');
     }
@@ -95,14 +107,18 @@ class AccountController extends Controller
         $this->authorize('close',$account);
 
         $count = Accounts::query()->where('id','=',$account->id)->count();
+        if($account->owner_id == Auth::user()->id) {
+            if ($count > 0) {
+                $account->deleted_at = Carbon::now();
+            } else {
+                return response(view('errors.404'), 404);
+            }
 
-        if($count > 0){
-            $account->deleted_at = Carbon::now();
-        }else{
-            return response(view('errors.404'),404);
+            $account->save();
+        }else {
+            return response(view('errors.403'),403);
+
         }
-
-        $account->save();
 
         return redirect()->route('showAccounts', Auth::user())->with('success','Account closed');
     }
@@ -112,13 +128,20 @@ class AccountController extends Controller
 
         $count = Accounts::query()->where('id','=',$account->id)->count();
 
-        if($count > 0){
-            $account->deleted_at = null;
-        }else{
-            return response(view('errors.404'),404);
+        if($account->owner_id == Auth::user()->id){
+            if($count > 0){
+                $account->deleted_at = null;
+            }else{
+                return response(view('errors.404'),404);
+            }
+
+            $account->save();
+        } else {
+            return response(view('errors.403'),403);
+
         }
 
-        $account->save();
+
 
         return redirect()->route('showAccounts', Auth::user())->with('success','Account reopen');
     }
