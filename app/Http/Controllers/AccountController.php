@@ -140,12 +140,16 @@ class AccountController extends Controller
     {
         $pagetitle = "Create Movement";
 
-        $movements = new Movements();
+
         $movements->account_id = $account;
-        $movements->type = htmlspecialchars($_POST['type']);
-        $movements->movement_category_id = htmlspecialchars($_POST['movement_category_id']);
-        $movements->date = htmlspecialchars($_POST['date']);
-        $movements->value = htmlspecialchars ($_POST['value']);
+        $type = htmlspecialchars($_POST['type']);
+        $movement_category_id = htmlspecialchars($_POST['movement_category_id']);
+        $date = htmlspecialchars($_POST['date']);
+        $value = htmlspecialchars ($_POST['value']);
+        $movements =  Movements::create(['account_id' => $account, 'type' => $type, 'movement_category_id' => $movement_category_id, 'date' => $date, 'value' => $value]);
+
+        $movements->save();
+        $insertedID  = $movements->id;
 
         return view('createMovement', compact('pagetitle'));
 

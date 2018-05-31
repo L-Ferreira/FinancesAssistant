@@ -38,6 +38,7 @@
                             </div>
 
                             <button type="button" id="submit" name="submit" class="btn btn-primary pull-right">Create</button>
+
                         </form>
                     </div>
                 </div>
