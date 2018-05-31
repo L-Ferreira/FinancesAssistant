@@ -6,5 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Movements extends Model
 {
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+
+    protected $fillable = [
+        'account_id', 'movement_category_id', 'value', 'description'
+    ];*/
 
 }

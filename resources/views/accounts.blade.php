@@ -53,6 +53,16 @@
                                     @endcan
                                 @endif
                             </td>
+                            <td>
+                                @method('get')
+                                @csrf
+                                <a type="button" class="btn btn-xs btn-danger" href="{{ route('account.movement', $account->id) }}">See Movements</a>
+                            </td>
+                            <td>
+                                @method('post')
+                                @csrf
+                                <a type="button" class="btn btn-xs btn-danger" href="{{ route('create.movement', $account->id) }}">Create Movement</a>
+                            </td>
                         </tr>
                     @endforeach
             </table>

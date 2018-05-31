@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Accounts;
+use App\Movements;
 use App\User;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use function PHPSTORM_META\type;
 
 
 class AccountController extends Controller
@@ -119,5 +121,51 @@ class AccountController extends Controller
         $account->save();
 
         return redirect()->route('showAccounts', Auth::user())->with('success','Account reopen');
+    }
+
+    public function accountMovements($account)
+    {
+        $pageTitle = "List of Accounts";
+
+
+        if(Movements::query()->where('account_id', '=', $account))
+        {
+            $movements = Movements::all();
+        }
+
+        return view('movements', compact('pageTitle', 'movements'));
+    }
+
+    public function createMovement($account)
+    {
+        $pagetitle = "Create Movement";
+
+        $movements = new Movements();
+        $movements->account_id = $account;
+        $movements->type = htmlspecialchars($_POST['type']);
+        $movements->movement_category_id = htmlspecialchars($_POST['movement_category_id']);
+        $movements->date = htmlspecialchars($_POST['date']);
+        $movements->value = htmlspecialchars ($_POST['value']);
+
+        return view('createMovement', compact('pagetitle'));
+
+    }
+
+    public function editMovement($movement)
+    {
+        $pagetitle = "Edit Movement";
+
+        /*$movements = Movements::query()->where('id', '=', $movement)->update(['type' =]);*/
+
+        //$movements->save();
+        return view('editMovement', compact('pagetitle'));
+    }
+
+    public function deleteMovement($movement)
+    {
+        $movement = Movements::find($movement);
+        $movement->delete();
+
+        return redirect()->back();
     }
 }
