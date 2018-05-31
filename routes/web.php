@@ -52,3 +52,10 @@ Route::get('/accounts/{user}/closed', 'AccountController@showAccountsClosed')->n
 Route::delete('/account/{account}', 'AccountController@destroy')->name('accounts.destroy');
 Route::patch('/account/{account}/close','AccountController@close')->name('close');
 Route::patch('/account/{account}/reopen','AccountController@reopen')->name('reopen');
+
+//USERS MOVEMENTS
+Route::get('/movements/{account}', 'AccountController@accountMovements')->name('account.movement');
+Route::post('/movements/{account}/create', 'AccountController@createMovement')->name('create.movement');
+Route::get('/movement/{movement}', 'AccountController@editMovement')->name('edit.movement');
+//Route::put('/movement/{movement}');
+Route::delete('/movement/{movement}', 'AccountController@deleteMovement')->name('delete.movement');
