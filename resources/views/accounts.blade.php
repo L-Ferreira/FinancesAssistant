@@ -20,49 +20,52 @@
                             <td>{{ $account->code}}</td>
                             <td>{{ $account->name}}</td>
                             <td>{{ $account->current_balance }}</td>
-                            <td>
-                                @if( is_null($account->last_movement_date))
-                                    @can('delete',$account)
-                                        <form action="{{route('accounts.destroy',$account->id)}}" method="POST" role="form" class="inline">
-                                            @method('delete')
-                                            @csrf
-                                            <button type="submit" class="btn btn-xs btn-danger">Delete</button>
-                                        </form>
-                                    @endcan
-                                @endif
-                            </td>
-                            <td>
-                                @if(is_null($account->deleted_at))
-                                    @can('close',$account)
-                                        <form action="{{route('close',$account->id)}}" method="POST" role="form" class="inline">
-                                            @method('patch')
-                                            @csrf
-                                            <button type="submit" class="btn btn-xs btn-danger">Close</button>
-                                        </form>
-                                    @endcan
-                                @endif
-                            </td>
-                            <td>
-                                @if($account->deleted_at != null)
-                                    @can('reopen',$account)
-                                        <form action="{{route('reopen',$account->id)}}" method="POST" role="form" class="inline">
-                                            @method('patch')
-                                            @csrf
-                                            <button type="submit" class="btn btn-xs btn-danger">Reopen</button>
-                                        </form>
-                                    @endcan
-                                @endif
-                            </td>
-                            <td>
-                                @method('get')
-                                @csrf
-                                <a type="button" class="btn btn-xs btn-danger" href="{{ route('account.movement', $account->id) }}">See Movements</a>
-                            </td>
-                            <td>
-                                @method('post')
-                                @csrf
-                                <a type="button" class="btn btn-xs btn-danger" href="{{ route('create.movement', $account->id) }}">Create Movement</a>
-                            </td>
+                            @if($account->owner_id == Auth::user()->id)
+                                <div class="d-flex justify-content-around">
+                                    <td class="d-flex">
+                                        @if( is_null($account->last_movement_date))
+                                            @can('delete',$account)
+                                                <div class="p-2">
+                                                    <form action="{{route('accounts.destroy',$account->id)}}" method="POST" role="form" class="inline">
+                                                        @method('delete')
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-xs btn-danger">Delete</button>
+                                                    </form>
+                                                </div>
+                                            @endcan
+                                        @endif
+                                        @if(is_null($account->deleted_at))
+                                            @can('close',$account)
+                                                <div class="p-2">
+                                                    <form action="{{route('close',$account->id)}}" method="POST" role="form" class="inline">
+                                                        @method('patch')
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-xs btn-danger">Close</button>
+                                                    </form>
+                                                </div>
+                                            @endcan
+                                        @endif
+                                        @if($account->deleted_at != null)
+                                            @can('reopen',$account)
+                                                <div class="p-2">
+                                                    <form action="{{route('reopen',$account->id)}}" method="POST" role="form" class="inline">
+                                                        @method('patch')
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-xs btn-success">Reopen</button>
+                                                    </form>
+                                                </div>
+                                            @endcan
+                                        @endif
+                                        <div class="p-2">
+                                            @can('editAccount', $account)
+                                                <a class="btn btn-xs btn-primary" href="{{route('account.edit',$account->id)}}">Edit</a>
+                                            @endcan
+                                        </div>
+
+                                    </td>
+                                </div>
+                            @endif
+
                         </tr>
                     @endforeach
             </table>

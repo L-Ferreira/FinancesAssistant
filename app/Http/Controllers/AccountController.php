@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Accounts;
+use App\Http\Requests\CreateAccountRequest;
+use App\Http\Requests\UpdateAccountRequest;
 use App\Movements;
 use App\User;
 use Illuminate\Auth\Access\Response;
@@ -22,8 +24,6 @@ class AccountController extends Controller
     public function showAccounts($user){
         $pageTitle = "List my Accounts";
 
-
-
         $count = User::query()->where('id','=',$user)->count();
 
         if($count > 0){
@@ -34,7 +34,7 @@ class AccountController extends Controller
             return response(view('errors.404'),404);
         }
 
-        if($user == Auth::user()->id) {
+        if($user == Auth::user()->id || Auth::user()->isAssociateOf($user)) {
             return view('accounts', compact('pageTitle', 'accounts'));
         }else{
             return response(view('errors.403'),403);
@@ -125,7 +125,6 @@ class AccountController extends Controller
 
     public function reopen(Accounts $account){
         $this->authorize('reopen',$account);
-
         $count = Accounts::query()->where('id','=',$account->id)->count();
 
         if($account->owner_id == Auth::user()->id){
@@ -195,4 +194,61 @@ class AccountController extends Controller
 
         return redirect()->back();
     }
+
+
+
+    public function create(User $user) {
+//        $this->authorize('createAccount', $user);
+
+        return view('account_form', compact('request'));
+    }
+
+    public function store(CreateAccountRequest $request, User $user) {
+
+//        $this->authorize('createAccount', $user);
+
+        $data = $request->validated();
+
+        $newAccount = new Accounts();
+        $newAccount->owner_id = Auth::user()->id;
+        $newAccount->account_type_id = $data['account_type_id'];
+        $newAccount->date = $data['date'] ?? Carbon::now()->format('Y-m-d');
+        $newAccount->code = $data['code'];
+        $newAccount->description = $data['description'] ?? null;
+        $newAccount->start_balance = $data['start_balance'];
+        $newAccount->current_balance = $data['start_balance'];
+        $newAccount->last_movement_date = null;
+        $newAccount->deleted_at = null;
+        $newAccount->save();
+
+        return redirect()
+            ->route('me')
+            ->with('success', 'Account created successfully');
+    }
+
+    public function edit($id)
+    {
+//        $user = Auth::user();
+//        dd($user);
+//        $this->authorize('edit', $user);
+        $account = Accounts::find($id);
+        return view('accounts.edit', compact('account'));
+    }
+
+    public function update(UpdateAccountRequest $request, Accounts $account)
+    {
+        $this->authorize('editAccount',$account);
+        $data = $request->validated();
+
+        $account->fill($data);
+
+        $account->save();
+
+        return redirect()
+            ->route('me')
+            ->with('success', 'User saved successfully');
+    }
 }
+
+
+

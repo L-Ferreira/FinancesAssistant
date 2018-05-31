@@ -60,12 +60,12 @@
                         <td>{{ $user->email}}</td>
                         <td>{{ $user->created_at }}</td>
                         @if($user->admin == 1)
-                            <td>Admin</td>
+                            <td class="user-is-admin">Admin</td>
                         @else
                             <td>---</td>
                         @endif
                         @if($user->blocked == 1)
-                            <td>
+                            <td class="user-is-blocked">
                                 Blocked
                             </td>
                         @else
@@ -76,6 +76,42 @@
                         @else
                             <td>{{ $user->phone }}</td>
                         @endif
+                        <div class="d-flex justify-content-around">
+                            <td class="d-flex">
+                                @if(Auth::user()->id != $user->id )
+                                    <div class="p-2">
+                                        @if(!$user->blocked)
+                                            <form  method="POST" action="{{route('block', $user->id)}}" >
+                                                @csrf
+                                                @method('patch')
+                                                <button class="btn btn-danger" type="submit" role="button">Block</button>
+                                            </form>
+                                        @else
+                                            <form method="POST" action="{{route('unblock', $user->id)}}">
+                                                @csrf
+                                                @method('patch')
+                                                <button class="btn btn-success" type="submit" role="button">Unblock</button>
+                                            </form>
+                                        @endif
+                                    </div>
+                                    <div class="p-2">
+                                        @if(!$user->admin)
+                                            <form method="POST" action="{{route('promote', $user->id)}}">
+                                                @csrf
+                                                @method('patch')
+                                                <button class="btn btn-primary" type="submit" role="button">Promote</button>
+                                            </form>
+                                        @else
+                                            <form method="POST" action="{{route('demote', $user->id)}}">
+                                                @csrf
+                                                @method('patch')
+                                                <button class="btn btn-primary" type="submit" role="button">Demote</button>
+                                            </form>
+                                        @endif
+                                    </div>
+                                @endif
+                            </td>
+                        </div>
                     </tr>
                 @endforeach
             </table>

@@ -24,6 +24,9 @@
             "database/seeds",
             "database/factories"
         ],
+        "files": [
+            "app/Http/Helpers/html_helpers.php"
+        ],
         "psr-4": {
             "App\\": "app/"
         }

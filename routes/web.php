@@ -35,10 +35,11 @@ Route::put('/me/profile', 'UserController@update')->name('me.update')->middlewar
 //EDIT PASSWORD
 Route::get('/me/password','UserController@editPassword')->name('me.editPassword')->middleware('auth');
 Route::patch('/me/password', 'UserController@updatePassword')->name('me.updatePassword')->middleware('auth');
+
 //ASSOCIATES
 Route::get('/me/associates','UserController@associates')->name('me.associates')->middleware('auth');
 //ASSOCIATES-OF
-Route::get('/me/associates-of','UserController@associatesOf')->name('me.associatesOf')->middleware('auth');
+Route::get('/me/associate-of','UserController@associateOf')->name('me.associateOf')->middleware('auth');
 //USER PROFILES
 Route::get('/profiles', 'HomeController@showProfiles')->name('profiles');
 Route::get('/users/{id}', 'UserController@usersProfile')->name('usersProfile');
@@ -52,6 +53,13 @@ Route::get('/accounts/{user}/closed', 'AccountController@showAccountsClosed')->n
 Route::delete('/account/{account}', 'AccountController@destroy')->name('accounts.destroy');
 Route::patch('/account/{account}/close','AccountController@close')->name('close');
 Route::patch('/account/{account}/reopen','AccountController@reopen')->name('reopen');
+
+//CREATE ACCOUNT
+Route::get('/account','AccountController@create')->name('account.create');
+Route::post('/account','AccountController@store')->name('account.store');
+//EDIT ACCOUNT
+Route::get('/account/{account}','AccountController@edit')->name('account.edit')->middleware('auth');
+Route::put('/account/{account}', 'AccountController@update')->name('account.update')->middleware('auth');
 
 //USERS MOVEMENTS
 Route::get('/movements/{account}', 'AccountController@accountMovements')->name('account.movement');

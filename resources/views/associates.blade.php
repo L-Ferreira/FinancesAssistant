@@ -23,7 +23,7 @@
                     <div class="card-body">
                         @if(Route::current()->getName() == 'me.associates')
                             <h2>My Associates</h2>
-                        @elseif(Route::current()->getName() == 'me.associatesOf')
+                        @elseif(Route::current()->getName() == 'me.associateOf')
                             <h2>Associate Of</h2>
                         @endif
                         <table class="table table-striped">
@@ -33,6 +33,9 @@
                                 <th scope="col">Fullname</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Profile</th>
+                                @if(Route::current()->getName() == 'me.associateOf')
+                                    <th scope="col">Accounts</th>
+                                @endif
                             </tr>
                             </thead>
                             <tbody>
@@ -50,6 +53,11 @@
                                     <td style="width: 200px">
                                         <a class="btn btn-xs btn-primary" href="{{route('usersProfile', $user->id)}}" style="width: 200px">Show Profile</a>
                                     </td>
+                                    @if(Route::current()->getName() == 'me.associateOf')
+                                        <td>
+                                            <a class="btn btn-xs btn-primary" href="{{route('showAccounts', $user->id)}}" style="width: 200px">User's Accounts</a>
+                                        </td>
+                                    @endif
                                 </tr>
                             @endforeach
                             </tbody>

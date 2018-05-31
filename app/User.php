@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -47,6 +48,16 @@ class User extends Authenticatable
     public function isNormalUser()
     {
         return $this->type == '1';
+    }
+    public function isAssociateOf($associateUser)
+    {
+        $associateMembers = AssociateMembers::all();
+        foreach ($associateMembers as $associatedMember) {
+            if ($associatedMember->associated_user_id == Auth::user()->id && $associateUser == $associatedMember->main_user_id) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

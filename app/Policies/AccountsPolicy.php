@@ -20,15 +20,23 @@ class AccountsPolicy
         //
     }
 
-    public function delete(User $user, Accounts $account){
-        return $user->id === $account->owner_id;
+    public function delete(User $user, Accounts $account) {
+        return $user->id == $account->owner_id;
     }
 
-    public function close(User $user, Accounts $account){
-        return $user->id === $account->owner_id || $user->admin;
+    public function close(User $user, Accounts $account) {
+        return $user->id == $account->owner_id || $user->admin;
     }
 
-    public function reopen(User $user, Accounts $account){
-        return $user->id === $account->owner_id || $user->admin;
+    public function reopen(User $user, Accounts $account) {
+        return $user->id == $account->owner_id || $user->admin;
+    }
+
+    public function createAccount(User $user) {
+        return $user == Auth::user();
+    }
+
+    public function editAccount(User $user, Accounts $account) {
+        return $user->id == $account->owner_id;
     }
 }

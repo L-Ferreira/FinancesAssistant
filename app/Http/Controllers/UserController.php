@@ -129,7 +129,7 @@ class UserController extends Controller
         return view('associates', compact('user', 'users'));
     }
 
-    public function associatesOf()
+    public function associateOf()
     {
        $user = Auth::user();
        $users = DB::table('users')
