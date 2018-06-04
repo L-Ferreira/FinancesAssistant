@@ -61,11 +61,15 @@
                                                 <a class="btn btn-xs btn-primary" href="{{route('account.edit',$account->id)}}">Edit</a>
                                             @endcan
                                         </div>
-
+                                    </td>
+                                    <td>
+                                        <a  class="btn btn-primary" href="{{ route('account.movement', $account->id) }}" id="movements" >SeeMovements</a>
+                                    </td>
+                                    <td>
+                                        <a type="button" class="btn btn-xs btn-success" href="{{ route('create.movement', $account->id) }}">Create Movement</a>
                                     </td>
                                 </div>
                             @endif
-
                         </tr>
                     @endforeach
             </table>

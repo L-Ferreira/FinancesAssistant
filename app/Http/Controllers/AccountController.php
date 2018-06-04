@@ -145,15 +145,28 @@ class AccountController extends Controller
         return redirect()->route('showAccounts', Auth::user())->with('success','Account reopen');
     }
 
-    public function accountMovements($account)
+    public function accountMovements(Accounts $account)
     {
-        $pageTitle = "List of Accounts";
 
+        $pageTitle = "List of Movements";
 
-        if(Movements::query()->where('account_id', '=', $account))
-        {
-            $movements = Movements::all();
+        if(Auth::user()->id != $account->owner_id){
+            return response(view('errors.403'),403);
         }
+
+        $count = Movements::query()->where('account_id','=',$account->id)->count();
+
+
+        if($count > 0)
+        {
+
+//            $movements = Movements::query()->where('account_id', '=', $account->id)->orderByDesc('created_at')->get();
+            $movements = Movements::Where('account_id', '=', $account->id)->orderByDesc('created_at')->get();
+        } else {
+            return response(view('errors.404'),404);
+
+        }
+
 
         return view('movements', compact('pageTitle', 'movements'));
     }

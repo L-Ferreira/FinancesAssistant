@@ -56,6 +56,7 @@ class UserStory20Test extends BaseAccountsTest
             ->assertSuccessful();
 
         $this->assertOrderedMovements();
+
     }
 
     // @codingStandardsIgnoreStart
@@ -72,6 +73,7 @@ class UserStory20Test extends BaseAccountsTest
             ->get('/movements/'.$account->id)
             ->assertSuccessful();
 
+        dd('ola ');
         $this->assertOrderedMovements();
     }
 
