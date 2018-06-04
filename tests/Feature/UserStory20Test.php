@@ -73,7 +73,6 @@ class UserStory20Test extends BaseAccountsTest
             ->get('/movements/'.$account->id)
             ->assertSuccessful();
 
-        dd('ola ');
         $this->assertOrderedMovements();
     }
 

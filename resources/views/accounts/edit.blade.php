@@ -35,7 +35,7 @@
                             </div>
                             <div class="form-group p-2">
                                 <label for="inputStartBalance">Start Balance</label>
-                                <input type="number" class="form-control" name="start_balance" id="inputStartBalance" value="{{old('start_balance',  $account->start_balance)}}"/>
+                                <input type="number" class="form-control" name="start_balance" id="inputStartBalance"/>
                             </div>
                             <div class="form-group p-2">
                                 <label for="inputDate">Start Date</label>

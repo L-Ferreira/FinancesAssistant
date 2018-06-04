@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Accounts;
+use App\Account;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -20,15 +20,15 @@ class AccountsPolicy
         //
     }
 
-    public function delete(User $user, Accounts $account) {
+    public function delete(User $user, Account $account) {
         return $user->id == $account->owner_id;
     }
 
-    public function close(User $user, Accounts $account) {
+    public function close(User $user, Account $account) {
         return $user->id == $account->owner_id || $user->admin;
     }
 
-    public function reopen(User $user, Accounts $account) {
+    public function reopen(User $user, Account $account) {
         return $user->id == $account->owner_id || $user->admin;
     }
 
@@ -36,7 +36,7 @@ class AccountsPolicy
         return $user == Auth::user();
     }
 
-    public function editAccount(User $user, Accounts $account) {
+    public function editAccount(User $user, Account $account) {
         return $user->id == $account->owner_id;
     }
 }

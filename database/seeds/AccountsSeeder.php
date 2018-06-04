@@ -19,7 +19,7 @@ class AccountsSeeder extends Seeder
      */
     public function run()
     {
-        $this->command->table(['Accounts table seeder notice'], [
+        $this->command->table(['Account table seeder notice'], [
             ['Edit this file to change the number of accounts to create']
         ]);
 

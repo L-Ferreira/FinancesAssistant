@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AssociateMembers extends Model
+class AssociateMember extends Model
 {
     //
 }

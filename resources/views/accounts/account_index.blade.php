@@ -62,9 +62,11 @@
                                             @endcan
                                         </div>
                                     </td>
-                                    <td>
-                                        <a  class="btn btn-primary" href="{{ route('account.movement', $account->id) }}" id="movements" >SeeMovements</a>
-                                    </td>
+                                    @if(!is_null($account->last_movement_date))
+                                        <td>
+                                            <a class="btn btn-primary" href="{{ route('account.movement', $account->id) }}" id="movements" >SeeMovements</a>
+                                        </td>
+                                    @endif
                                     <td>
                                         <a type="button" class="btn btn-xs btn-success" href="{{ route('create.movement', $account->id) }}">Create Movement</a>
                                     </td>

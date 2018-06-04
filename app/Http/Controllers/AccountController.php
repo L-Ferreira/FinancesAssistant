@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Accounts;
+use App\Account;
 use App\Http\Requests\CreateAccountRequest;
 use App\Http\Requests\UpdateAccountRequest;
+use App\Movement;
 use App\Movements;
 use App\User;
+use function Couchbase\defaultDecoder;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use function PHPSTORM_META\type;
 
 
@@ -22,12 +25,12 @@ class AccountController extends Controller
     }
 
     public function showAccounts($user){
-        $pageTitle = "List my Accounts";
+        $pageTitle = "List my Account";
 
         $count = User::query()->where('id','=',$user)->count();
 
         if($count > 0){
-            $accounts = Accounts::join('account_types','account_types.id','=','accounts.account_type_id')
+            $accounts = Account::join('account_types','account_types.id','=','accounts.account_type_id')
                 ->select('accounts.*', 'account_types.name')
                 ->where('accounts.owner_id','=',$user)->get();
         }else{
@@ -35,19 +38,19 @@ class AccountController extends Controller
         }
 
         if($user == Auth::user()->id || Auth::user()->isAssociateOf($user)) {
-            return view('accounts', compact('pageTitle', 'accounts'));
+            return view('accounts.account_index', compact('pageTitle', 'accounts'));
         }else{
             return response(view('errors.403'),403);
         }
     }
 
     public function showAccountsOpened($user){
-        $pageTitle = "List my Accounts Closed" ;
+        $pageTitle = "List my Account Closed" ;
 
         $count = User::query()->where('id','=',$user)->count();
 
         if($count > 0){
-            $accounts = Accounts::join('account_types','account_types.id','=','accounts.account_type_id')
+            $accounts = Account::join('account_types','account_types.id','=','accounts.account_type_id')
                 ->select('accounts.*','account_types.name')
                 ->where('accounts.owner_id','=',$user)
                 ->where('accounts.deleted_at','=',NULL)->get();
@@ -56,19 +59,19 @@ class AccountController extends Controller
         }
 
         if($user == Auth::user()->id) {
-            return view('accounts', compact('pageTitle', 'accounts'));
+            return view('accounts.account_index', compact('pageTitle', 'accounts'));
         }else{
             return response(view('errors.403'),403);
         }
     }
 
     public function showAccountsClosed($user){
-        $pageTitle = "List my Accounts Closed" ;
+        $pageTitle = "List my Account Closed" ;
 
         $count = User::query()->where('id','=',$user)->count();
 
         if($count > 0){
-            $accounts = Accounts::join('account_types','account_types.id','=','accounts.account_type_id')
+            $accounts = Account::join('account_types','account_types.id','=','accounts.account_type_id')
                 ->select('accounts.*','account_types.name')
                 ->where('accounts.owner_id','=',$user)
                 ->where('accounts.deleted_at','!=',NULL)->get();
@@ -77,16 +80,16 @@ class AccountController extends Controller
         }
 
         if($user == Auth::user()->id) {
-            return view('accounts', compact('pageTitle', 'accounts'));
+            return view('accounts.account_index', compact('pageTitle', 'accounts'));
         }else{
             return response(view('errors.403'),403);
         }
     }
 
-    public function destroy(Accounts $account){
+    public function destroy(Account $account){
         $this->authorize('delete',$account);
 
-        $count = Movements::query()->where('account_id','=',$account->id)->count();
+        $count = Movement::query()->where('account_id','=',$account->id)->count();
 
         if(!Auth::user()->admin || Auth::user()->admin) {
             if ($count == 0 && is_null($account->last_movement_date)) {
@@ -103,10 +106,10 @@ class AccountController extends Controller
         return redirect()->route('showAccounts', Auth::user())->with('success','User deleted successfully');
     }
 
-    public function close(Accounts $account){
+    public function close(Account $account){
         $this->authorize('close',$account);
 
-        $count = Accounts::query()->where('id','=',$account->id)->count();
+        $count = Account::query()->where('id','=',$account->id)->count();
         if($account->owner_id == Auth::user()->id) {
             if ($count > 0) {
                 $account->deleted_at = Carbon::now();
@@ -123,9 +126,9 @@ class AccountController extends Controller
         return redirect()->route('showAccounts', Auth::user())->with('success','Account closed');
     }
 
-    public function reopen(Accounts $account){
+    public function reopen(Account $account){
         $this->authorize('reopen',$account);
-        $count = Accounts::query()->where('id','=',$account->id)->count();
+        $count = Account::query()->where('id','=',$account->id)->count();
 
         if($account->owner_id == Auth::user()->id){
             if($count > 0){
@@ -145,70 +148,6 @@ class AccountController extends Controller
         return redirect()->route('showAccounts', Auth::user())->with('success','Account reopen');
     }
 
-    public function accountMovements(Accounts $account)
-    {
-
-        $pageTitle = "List of Movements";
-
-        if(Auth::user()->id != $account->owner_id){
-            return response(view('errors.403'),403);
-        }
-
-        $count = Movements::query()->where('account_id','=',$account->id)->count();
-
-
-        if($count > 0)
-        {
-
-//            $movements = Movements::query()->where('account_id', '=', $account->id)->orderByDesc('created_at')->get();
-            $movements = Movements::Where('account_id', '=', $account->id)->orderByDesc('created_at')->get();
-        } else {
-            return response(view('errors.404'),404);
-
-        }
-
-
-        return view('movements', compact('pageTitle', 'movements'));
-    }
-
-    public function createMovement($account)
-    {
-        $pagetitle = "Create Movement";
-
-
-        $movements->account_id = $account;
-        $type = htmlspecialchars($_POST['type']);
-        $movement_category_id = htmlspecialchars($_POST['movement_category_id']);
-        $date = htmlspecialchars($_POST['date']);
-        $value = htmlspecialchars ($_POST['value']);
-        $movements =  Movements::create(['account_id' => $account, 'type' => $type, 'movement_category_id' => $movement_category_id, 'date' => $date, 'value' => $value]);
-
-        $movements->save();
-        $insertedID  = $movements->id;
-
-        return view('createMovement', compact('pagetitle'));
-
-    }
-
-    public function editMovement($movement)
-    {
-        $pagetitle = "Edit Movement";
-
-        /*$movements = Movements::query()->where('id', '=', $movement)->update(['type' =]);*/
-
-        //$movements->save();
-        return view('editMovement', compact('pagetitle'));
-    }
-
-    public function deleteMovement($movement)
-    {
-        $movement = Movements::find($movement);
-        $movement->delete();
-
-        return redirect()->back();
-    }
-
-
 
     public function create(User $user) {
 //        $this->authorize('createAccount', $user);
@@ -222,7 +161,7 @@ class AccountController extends Controller
 
         $data = $request->validated();
 
-        $newAccount = new Accounts();
+        $newAccount = new Account();
         $newAccount->owner_id = Auth::user()->id;
         $newAccount->account_type_id = $data['account_type_id'];
         $newAccount->date = $data['date'] ?? Carbon::now()->format('Y-m-d');
@@ -244,11 +183,11 @@ class AccountController extends Controller
 //        $user = Auth::user();
 //        dd($user);
 //        $this->authorize('edit', $user);
-        $account = Accounts::find($id);
+        $account = Account::find($id);
         return view('accounts.edit', compact('account'));
     }
 
-    public function update(UpdateAccountRequest $request, Accounts $account)
+    public function update(UpdateAccountRequest $request, Account $account)
     {
         $this->authorize('editAccount',$account);
         $data = $request->validated();
@@ -258,7 +197,7 @@ class AccountController extends Controller
         $account->save();
 
         return redirect()
-            ->route('me')
+            ->route('showAccounts', Auth::user())
             ->with('success', 'User saved successfully');
     }
 }

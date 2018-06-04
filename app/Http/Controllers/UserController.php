@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\AssociateMembers;
+use App\AssociateMember;
+use App\Movement;
 use App\Rules\OldPassword;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\User;
-use App\Accounts;
+use App\Account;
 use App\Movements;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Auth;
@@ -32,9 +33,9 @@ class UserController extends Controller
 
         $results_users= User::all()->count();
 
-        $results_accounts= Accounts::all()->count();
+        $results_accounts= Account::all()->count();
 
-        $results_movements= Movements::all()->count();
+        $results_movements= Movement::all()->count();
 
 
         return view('welcome',compact('results_users','results_accounts','results_movements'));
@@ -44,13 +45,13 @@ class UserController extends Controller
     public function myProfile()
     {
         $user = Auth::user();
-        return view('profile', compact('user'));
+        return view('users.profile', compact('user'));
     }
 
     public function usersProfile($id)
     {
         $user = User::find($id);
-        return view('profile', compact('user'));
+        return view('users.profile', compact('user'));
     }
 
     public function edit()
@@ -126,7 +127,7 @@ class UserController extends Controller
             ->select('users.*')
             ->where([['associate_members.main_user_id', '=', $user->id]])
             ->get();
-        return view('associates', compact('user', 'users'));
+        return view('users.associates', compact('user', 'users'));
     }
 
     public function associateOf()
@@ -137,7 +138,7 @@ class UserController extends Controller
             ->select('users.*')
             ->where([['associate_members.associated_user_id', '=', $user->id]])
             ->get();
-       return view('associates', compact('user', 'users'));
+       return view('users.associates', compact('user', 'users'));
     }
 
     public function block($id)

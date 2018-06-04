@@ -29,7 +29,7 @@
         <div class="title m-b-md">
             <h1>Finances Assistant</h1>
 
-            <h3>Welcome Ainet Project</h3>
+            <h3>Welcome to your personal Finances Assistant</h3>
         </div>
         <div class="midlle estatistics">
             <div align="center">

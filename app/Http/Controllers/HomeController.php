@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\AssociateMembers;
+use App\AssociateMember;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 
@@ -58,14 +58,14 @@ class HomeController extends Controller
 
         $users = $query->get();
 
-        return view('showUsers', compact('pageTitle', 'users'));
+        return view('admin_showUsers', compact('pageTitle', 'users'));
 
     }
 
     public function showProfiles(Request $request) {
 
         $users = User::all();
-        $associates = AssociateMembers::all();
+        $associates = AssociateMember::all();
 
         $name = $request->name;
         $type = $request->type;
@@ -91,7 +91,7 @@ class HomeController extends Controller
 
         $users = $query->get();
 
-        return view('profiles', compact('users', 'associates'));
+        return view('users_index', compact('users', 'associates'));
     }
 
 }

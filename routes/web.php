@@ -58,12 +58,12 @@ Route::patch('/account/{account}/reopen','AccountController@reopen')->name('reop
 Route::get('/account','AccountController@create')->name('account.create');
 Route::post('/account','AccountController@store')->name('account.store');
 //EDIT ACCOUNT
-Route::get('/account/{account}','AccountController@edit')->name('account.edit')->middleware('auth');
-Route::put('/account/{account}', 'AccountController@update')->name('account.update')->middleware('auth');
+Route::get('/account/{account}','AccountController@edit')->name('account.edit');
+Route::put('/account/{account}', 'AccountController@update')->name('account.update');
 
 //USERS MOVEMENTS
-Route::get('/movements/{account}', 'AccountController@accountMovements')->name('account.movement');
-Route::post('/movements/{account}/create', 'AccountController@createMovement')->name('create.movement');
-Route::get('/movement/{movement}', 'AccountController@editMovement')->name('edit.movement');
+Route::get('/movements/{account}', 'MovementController@accountMovements')->name('account.movement');
+Route::post('/movements/{account}/create', 'MovementController@createMovement')->name('create.movement');
+Route::get('/movement/{movement}', 'MovementController@editMovement')->name('edit.movement');
 //Route::put('/movement/{movement}');
-Route::delete('/movement/{movement}', 'AccountController@deleteMovement')->name('delete.movement');
+Route::delete('/movement/{movement}', 'MovementController@deleteMovement')->name('delete.movement');

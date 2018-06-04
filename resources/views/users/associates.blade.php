@@ -1,4 +1,4 @@
-@extends('profile')
+@extends('users.profile')
 
 @section('content')
     <div class="container">
