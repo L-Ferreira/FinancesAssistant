@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Account;
+use App\Http\Requests\CreateMovementRequest;
+use App\Http\Requests\UpdateMovementRequest;
 use App\Movement;
+use App\Movement_category;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -40,43 +44,22 @@ class MovementController extends Controller
         }
 
 
-        return view('movements', compact('pageTitle', 'movements'));
+        return view('movements.movements_index', compact('pageTitle', 'movements'));
     }
 
-    public function createMovement($account)
-    {
-        $pagetitle = "Create Movement";
+    public function create(Account $account) {
+//        $this->authorize('createAccount', $user);
+        $movement_types = Movement_category::all();
+        return view('movements.createMovement', compact('account','movement_types'));
+    }
 
-
-        $movements->account_id = $account;
-        $type = htmlspecialchars($_POST['type']);
-        $movement_category_id = htmlspecialchars($_POST['movement_category_id']);
-        $date = htmlspecialchars($_POST['date']);
-        $value = htmlspecialchars ($_POST['value']);
-        $movements =  Movement::create(['account_id' => $account, 'type' => $type, 'movement_category_id' => $movement_category_id, 'date' => $date, 'value' => $value]);
-
-        $movements->save();
-        $insertedID  = $movements->id;
-
-        return view('createMovement', compact('pagetitle'));
+    public function store(CreateMovementRequest $request, Account $account) {
 
     }
 
-    public function editMovement($movement)
-    {
-        $pagetitle = "Edit Movement";
-
-        /*$movements = Movements::query()->where('id', '=', $movement)->update(['type' =]);*/
-
-        //$movements->save();
-        return view('editMovement', compact('pagetitle'));
+    public function edit($id) {
     }
 
-    public function deleteMovement($movement)
-    {
-        $movement = Movement::find($movement);
-        $movement->delete();
-
-        return redirect()->back();
+    public function update(UpdateMovementRequest $request, Movement $movement) {
     }
 }

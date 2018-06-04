@@ -27,11 +27,11 @@
                         <td>{{ $movement->end_balance}}</td>
                         <td>
                             <div class="input-group">
-                                <form  method="GET" action="{{route('edit.movement', $movement->id)}}">
+                                <form  method="GET" action="{{route('movement.edit', $movement->id)}}">
                                     <button class="btn-danger list-inline" type="submit" role="button">Edit</button>
                                 </form>
                                 <div class="input-group-btn">
-                                    <form  method="POST" action="{{route('delete.movement', $movement->id)}}">
+                                    <form  method="POST" action="{{route('movement.destroy', $movement->id)}}">
                                         <button class="btn-danger list-inline" type="submit" role="button">Delete</button>
                                     </form>
                                 </div>

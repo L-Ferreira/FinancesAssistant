@@ -10,7 +10,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex flex-row justify-content-around align-items-center">
-                            <h2>Creating an account</h2>
+                            <h2>Creating an Account</h2>
                         </div>
                     </div>
 
@@ -45,7 +45,7 @@
                                 <textarea class="form-control" name="description" id="inputDescription" rows="3"></textarea>
                             </div>
                             <div class="form-group d-flex justify-content-center">
-                                <button type="submit" class="btn btn-success" name="ok">Save</button>
+                                <button type="submit" class="btn btn-success" name="ok">Create</button>
                                 <a class="btn btn-default " href="{{route('me')}}">Cancel</a>
                             </div>
 

@@ -61,15 +61,16 @@
                                                 <a class="btn btn-xs btn-primary" href="{{route('account.edit',$account->id)}}">Edit</a>
                                             @endcan
                                         </div>
+                                        @if(!is_null($account->last_movement_date))
+                                            <div class="p-2">
+                                                <a class="btn btn-primary" href="{{ route('account.movement', $account->id) }}" id="movements" >SeeMovements</a>
+                                            </div>
+                                        @endif
+                                        <div class="p-2">
+                                            <a type="button" class="btn btn-xs btn-success" href="{{ route('movement.create', $account->id) }}">Create Movement</a>
+                                        </div>
                                     </td>
-                                    @if(!is_null($account->last_movement_date))
-                                        <td>
-                                            <a class="btn btn-primary" href="{{ route('account.movement', $account->id) }}" id="movements" >SeeMovements</a>
-                                        </td>
-                                    @endif
-                                    <td>
-                                        <a type="button" class="btn btn-xs btn-success" href="{{ route('create.movement', $account->id) }}">Create Movement</a>
-                                    </td>
+
                                 </div>
                             @endif
                         </tr>

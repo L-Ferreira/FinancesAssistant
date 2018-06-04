@@ -152,7 +152,7 @@ class AccountController extends Controller
     public function create(User $user) {
 //        $this->authorize('createAccount', $user);
 
-        return view('account_form', compact('request'));
+        return view('accounts.account_form', compact('request'));
     }
 
     public function store(CreateAccountRequest $request, User $user) {

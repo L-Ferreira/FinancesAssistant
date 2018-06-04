@@ -1,43 +1,56 @@
 @extends('layouts.app')
 
 @section('content')
+    @if ($errors->any())
+        @include('partials.errors')
+    @endif
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-10 col-md-offset-1 ">
                 <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex flex-row justify-content-around align-items-center">
+                            <h2>Creating a Movement</h2>
+                        </div>
+                    </div>
+
                     <div class="card-body">
-                        <form method="post" action="{{ route('create.movement', $account->id) }}" enctype="multipart/form-data">
+                        <form action="{{route('movement.store', $account)}}" method="post" class="form-group" enctype="multipart/form-data">
                             @csrf
-                            @method('post')
-                            {{--<h3 style="margin-bottom: 25px; text-align: center;">Create Movement</h3>--}}
-                            <label for="inputType">Type:</label>
-                            <div class="form-group form-check-inline">
-                                <input class="form-check-input" type="radio" name="type" id="inputTypeRevenue" value="revenue" checked>
-                                <label class="form-check-label">
-                                    Revenue
-                                </label>
+                            <div class="form-group p-2">
+                                <label for="inputCategory">Category</label>
+                                <select name="movement_category_id" id="inputCategory" class="form-control">
+                                    <option disabled selected> -- select an option -- </option>
+                                    @foreach($movement_types as $type)
+                                        <option value="<?= $type->id ?>"> <?= $type->name ?> </option>
+                                    @endforeach
+                                </select>
                             </div>
-                            <div class="form-group form-check-inline">
-                                <input class="form-check-input" type="radio" name="type" id="inputTypeExpense" value="expense">
-                                <label class="form-check-label">
-                                    Expense
-                                </label>
+                            <div class="form-group p-2">
+                                <label for="inputMovementType">Category</label>
+                                <select name="type" id="inputMovementType" class="form-control">
+                                    <option disabled selected> -- select an option -- </option>
+                                    <option value="revenue">Revenue</option>
+                                    <option value="expense">Expense</option>
+                                </select>
                             </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="inputCategory" name="category" placeholder="Category" required>
+                            <div class="form-group p-2">
+                                <label for="inputDate">Date</label>
+                                <input type="date" class="form-control" name="date" id="inputDate"/>
                             </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="inputDate" name="date" placeholder="date" required>
+                            <div class="form-group p-2">
+                                <label for="inputValue">Value</label>
+                                <input type="number" class="form-control" name="value" id="inputValue"/>
                             </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="subject" name="value" placeholder="value" required>
+                            <div class="form-group p-2">
+                                <label for="inputDescription">Description</label>
+                                <textarea class="form-control" name="description" id="inputDescription" rows="3"></textarea>
                             </div>
-                            <div class="form-group">
-                                <textarea class="form-control" type="textarea" id="inputMessage" placeholder="Description" maxlength="140" rows="7"></textarea>
-                                <span class="help-block"><p id="characterLeft" class="help-block ">You have reached the limit</p></span>
+                            <div class="form-group d-flex justify-content-center">
+                                <button type="submit" class="btn btn-success" name="ok">Create</button>
+                                <a class="btn btn-default " href="{{route('showAccounts',  Auth::user()->id)}}">Cancel</a>
                             </div>
 
-                            <button type="button" id="submit" name="submit" class="btn btn-primary pull-right">Create</button>
 
                         </form>
                     </div>
