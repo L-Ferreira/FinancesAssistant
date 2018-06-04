@@ -192,13 +192,50 @@ class AccountController extends Controller
         $this->authorize('editAccount',$account);
         $data = $request->validated();
 
-        $account->fill($data);
+        if (is_null($account->last_movement_date)) {
+            $account->current_balance = $data['start_balance'];
+        } else {
+            $account->current_balance = $account->current_balance+($data['start_balance'] - $account->start_balance);
+            $movements = Movement::query()->where('account_id', '=', $account->id)->orderBy('created_at')->get();
+            $newMovements = $this->recalculateMovementsBalance($movements, $data['start_balance']);
+            foreach ($newMovements as $mov) {
+                DB::table('movements')->where('id', '=', $mov->id)->orderBy('created_at')->update(['start_balance' => $mov->start_balance, 'end_balance' => $mov->end_balance]);
+            }
+        }
+
+
+        $account->owner_id = Auth::user()->id;
+        $account->account_type_id = $data['account_type_id'];
+        $account->date = $data['date'] ?? Carbon::now()->format('Y-m-d');
+        $account->code = $data['code'];
+        $account->description = $data['description'] ?? null;
+        $account->start_balance = $data['start_balance'];
 
         $account->save();
 
         return redirect()
             ->route('showAccounts', Auth::user())
             ->with('success', 'User saved successfully');
+    }
+
+    private function recalculateMovementsBalance($movements, $startBalance)
+    {
+        $numberOfMovs = count($movements) - 1;
+        $movements[0]->start_balance = $startBalance;
+        if ($movements[0]->type == 'expense')
+            $movements[0]->end_balance = $movements[0]->start_balance - $movements[0]->value;
+        elseif ($movements[0]->type == 'revenue')
+            $movements[0]->end_balance = $movements[0]->start_balance + $movements[0]->value;
+
+        for ($i = 1; $i <= $numberOfMovs; $i++) {
+            $movements[$i]->start_balance = $movements[$i - 1]->end_balance;
+            if ($movements[$i]->type == 'expense')
+                $movements[$i]->end_balance = $movements[$i]->start_balance - $movements[$i]->value;
+            elseif ($movements[$i]->type == 'revenue')
+                $movements[$i]->end_balance = $movements[$i]->start_balance + $movements[$i]->value;
+        }
+
+        return $movements;
     }
 }
 

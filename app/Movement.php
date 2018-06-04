@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Movements extends Model
+class Movement extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -12,7 +12,6 @@ class Movements extends Model
      * @var array
 
     protected $fillable = [
-        'account_id', 'movement_category_id', 'value', 'description'
+    'account_id', 'movement_category_id', 'value', 'description'
     ];*/
-
 }
