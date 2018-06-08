@@ -56,7 +56,6 @@ class UserStory20Test extends BaseAccountsTest
             ->assertSuccessful();
 
         $this->assertOrderedMovements();
-
     }
 
     // @codingStandardsIgnoreStart

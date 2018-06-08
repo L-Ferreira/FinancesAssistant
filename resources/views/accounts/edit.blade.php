@@ -49,8 +49,6 @@
                                 <button type="submit" class="btn btn-success" name="ok">Save</button>
                                 <a class="btn btn-default " href="{{route('me')}}">Cancel</a>
                             </div>
-
-
                         </form>
                     </div>
                 </div>

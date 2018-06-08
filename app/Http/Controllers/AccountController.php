@@ -149,8 +149,8 @@ class AccountController extends Controller
     }
 
 
-    public function create(User $user) {
-//        $this->authorize('createAccount', $user);
+    public function create() {
+        //$this->authorize('createAccount', $user);
 
         return view('accounts.account_form', compact('request'));
     }
@@ -162,15 +162,16 @@ class AccountController extends Controller
         $data = $request->validated();
 
         $newAccount = new Account();
+        $newAccount->fill($data);
         $newAccount->owner_id = Auth::user()->id;
-        $newAccount->account_type_id = $data['account_type_id'];
-        $newAccount->date = $data['date'] ?? Carbon::now()->format('Y-m-d');
-        $newAccount->code = $data['code'];
+       // $newAccount->account_type_id = $data['account_type_id'];
+        $newAccount->date = $data['date'] ?? Carbon::now() ->format('Y-m-d');
+      //  $newAccount->code = $data['code'];
         $newAccount->description = $data['description'] ?? null;
-        $newAccount->start_balance = $data['start_balance'];
+       // $newAccount->start_balance = $data['start_balance'];
         $newAccount->current_balance = $data['start_balance'];
-        $newAccount->last_movement_date = null;
-        $newAccount->deleted_at = null;
+    //    $newAccount->last_movement_date = null;
+     //   $newAccount->deleted_at = null;
         $newAccount->save();
 
         return redirect()

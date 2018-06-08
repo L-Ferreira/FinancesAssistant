@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\GreaterThanRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateMovementRequest extends FormRequest
@@ -13,7 +14,7 @@ class UpdateMovementRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +25,12 @@ class UpdateMovementRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'movement_category_id' => 'required|integer|exists:movement_categories,id',
+            'value' => [new GreaterThanRule(), 'required','numeric'],
+            'date' => 'required|date|before:now',
+            'description' => 'nullable|string',
+            'document_file' => 'nullable|mimes:jpg,png,pdf',
+            'document_description' => 'nullable|string',
         ];
     }
 }

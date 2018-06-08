@@ -1,40 +1,61 @@
 @extends('layouts.app')
 
 @section('content')
+    @if ($errors->any())
+        @include('partials.errors')
+    @endif
     <div class="container">
-        <div class="col-md-5">
-            <div class="form-area">
-                <form role="form" action="{{route('edit.movement', $account->id)}}">
-                    <h3 style="margin-bottom: 25px; text-align: center;">Edit Movement</h3>
-                    <label for="inputType">Type:</label>
-                    <div class="form-group form-check-inline">
-                        <input class="form-check-input" type="radio" name="type" id="inputTypeRevenue" value="revenue" checked>
-                        <label class="form-check-label" >
-                            Revenue
-                        </label>
-                    </div>
-                    <div class="form-group form-check-inline">
-                        <input class="form-check-input" type="radio" name="type" id="inputTypeExpense" value="expense">
-                        <label class="form-check-label">
-                            Expense
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="inputCategory" name="category" placeholder="Category" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="inputDate" name="date" placeholder="date" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="subject" name="value" placeholder="value" required>
-                    </div>
-                    <div class="form-group">
-                        <textarea class="form-control" type="textarea" id="inputMessage" placeholder="Description" maxlength="140" rows="7"></textarea>
-                        <span class="help-block"><p id="characterLeft" class="help-block ">You have reached the limit</p></span>
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-md-offset-1 ">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex flex-row justify-content-around align-items-center">
+                            <h2>Movement Update</h2>
+                        </div>
                     </div>
 
-                    <button type="button" id="submit" name="submit" class="btn btn-primary pull-right">Submit Form</button>
-                </form>
+                    <div class="card-body">
+                        <form action="{{route('movement.update', $movement->id)}}" method="post" class="form-group" enctype="multipart/form-data">
+                            @csrf
+                            @method('PUT')
+                            <div class="form-group p-2">
+                                <label for="inputCategory">Category</label>
+                                <select name="movement_category_id" id="inputCategory" class="form-control">
+                                    <option disabled selected> -- select an option -- </option>
+                                    @foreach($movement_types as $type)
+                                        <option value="<?= $type->id ?>"> <?= $type->name ?> </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group p-2">
+                                <label for="inputDate">Date</label>
+                                <input type="date" class="form-control" name="date" id="inputDate" value="{{old('date', $movement->date)}}"/>
+                            </div>
+                            <div class="form-group p-2">
+                                <label for="inputValue">Value</label>
+                                <input type="number" class="form-control" name="value" id="inputValue" value="{{old('value', $movement->value)}}"/>
+                            </div>
+                            <div class="form-group p-2">
+                                <label for="inputDescription">Description</label>
+                                <textarea class="form-control" name="description" id="inputDescription" rows="3" >{{old('description', $movement->description)}}</textarea>
+                            </div>
+                            <div class="form-group p-2">
+                                <label for="inputDocument">Document</label>
+                                <input type="file" class="form-control" name="document_file" id="inputDocument" value="{{old('document_file', $movement->document_file)}}"/>
+                            </div>
+                            <div class="form-group p-2">
+                                <label for="inputDocumentDescription">Document Description</label>
+                                <textarea class="form-control" name="document_description" id="inputDocumentDescription" rows="3">{{old('document_description', $movement->document_description)}}</textarea>
+                            </div>
+                            <div class="form-group d-flex justify-content-center">
+                                <button type="submit" class="btn btn-success" name="ok">Update</button>
+                                <a class="btn btn-default " href="{{route('showAccounts',  Auth::user()->id)}}">Cancel</a>
+                            </div>
+
+
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -15,7 +15,7 @@
                     </div>
 
                     <div class="card-body">
-                        <form action="{{route('account.store')}}" method="post" class="form-group" enctype="multipart/form-data">
+                        <form action="{{route('account.store', Auth::user()->id)}}" method="post" class="form-group" enctype="multipart/form-data">
                             @csrf
                             <div class="form-group p-2">
                                 <label for="inputAccountType">Account Type</label>
@@ -48,8 +48,6 @@
                                 <button type="submit" class="btn btn-success" name="ok">Create</button>
                                 <a class="btn btn-default " href="{{route('me')}}">Cancel</a>
                             </div>
-
-
                         </form>
                     </div>
                 </div>

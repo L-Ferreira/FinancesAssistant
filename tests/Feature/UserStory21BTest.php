@@ -16,7 +16,7 @@ use Tests\TestCase;
  * It might also include a link to the associated document (US24). Note that start and end balance are to be
  * calculated automatically – user should not edit these values;
  */
-class UserStory21BTest extends BaseAccountsTest
+class   UserStory21BTest extends BaseAccountsTest
 {
     // @codingStandardsIgnoreStart
     /** @test */

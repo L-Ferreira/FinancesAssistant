@@ -66,9 +66,11 @@
                                                 <a class="btn btn-primary" href="{{ route('account.movement', $account->id) }}" id="movements" >SeeMovements</a>
                                             </div>
                                         @endif
+                                            @if(Auth::user())
                                         <div class="p-2">
                                             <a type="button" class="btn btn-xs btn-success" href="{{ route('movement.create', $account->id) }}">Create Movement</a>
                                         </div>
+                                                @endif
                                     </td>
 
                                 </div>

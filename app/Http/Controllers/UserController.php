@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\AssociateMember;
 use App\Movement;
-use App\Rules\OldPassword;
+use App\Rules\OldPasswordRule;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Database\Eloquent\Model;
@@ -101,7 +101,7 @@ class UserController extends Controller
     public function updatePassword(Request $request)
     {
         $this->validate($request, [
-            'old_password' => [new OldPassword(), 'required'],
+            'old_password' => [new OldPasswordRule(), 'required'],
             'password' => 'required|string|min:3|confirmed',
         ]);
 

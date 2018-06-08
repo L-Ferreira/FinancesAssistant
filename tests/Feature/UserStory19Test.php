@@ -11,7 +11,7 @@ use Tests\TestCase;
  * As a user, when I change the start balance of an account, I want the application to recalculate all start and end
  * balances of all movements of the account, as well as the current balance of that account.
  */
-class   UserStory19Test extends BaseAccountsTest
+class UserStory19Test extends BaseAccountsTest
 {
     // @codingStandardsIgnoreStart
     /** @test */
@@ -73,7 +73,6 @@ class   UserStory19Test extends BaseAccountsTest
             'current_balance' => -111,
             'last_movement_date' => $account->last_movement_date
         ]);
-        
 
         $this->assertsMovements($movements, 0);
     }
@@ -89,9 +88,8 @@ class   UserStory19Test extends BaseAccountsTest
             'start_balance' => 0.1,
             'current_balance' => -111,
         ]);
-
         $movements = $this->seedTransactions($account, 'expense', 1111);
-        
+
         $data = [
             'account_type_id' => $this->types->last()->id,
             'code' => $this->faker->uuid,
@@ -103,14 +101,12 @@ class   UserStory19Test extends BaseAccountsTest
             ->put('/account/'.$account->id, $data)
             ->assertSuccessfulOrRedirect();
 
-
         $this->assertDatabaseHas('accounts', [
             'id' => $account->id,
             'start_balance' => 1.23,
             'current_balance' => -109.87,
             'last_movement_date' => $account->last_movement_date
         ]);
-
 
         $this->assertsMovements($movements, 113);
     }

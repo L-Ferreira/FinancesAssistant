@@ -76,7 +76,7 @@ Route::patch('/account/{account}/reopen','AccountController@reopen')->name('reop
 Route::get('/movements/{account}','MovementController@accountMovements')->name('account.movement');
 //CREATE MOVEMENT
 Route::get('/movements/{account}/create','MovementController@create')->name('movement.create');
-Route::post('/movement/{account}/create','MovementController@store')->name('movement.store');
+Route::post('/movements/{account}/create','MovementController@store')->name('movement.store');
 //EDIT MOVEMENT
 Route::get('/movement/{movement}','MovementController@edit')->name('movement.edit');
 Route::put('/movement/{movement}','MovementController@update')->name('movement.update');

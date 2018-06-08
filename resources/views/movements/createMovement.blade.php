@@ -15,7 +15,7 @@
                     </div>
 
                     <div class="card-body">
-                        <form action="{{route('movement.store', $account)}}" method="post" class="form-group" enctype="multipart/form-data">
+                        <form action="{{route('movement.store', $account->id)}}" method="post" class="form-group" enctype="multipart/form-data">
                             @csrf
                             <div class="form-group p-2">
                                 <label for="inputCategory">Category</label>
@@ -24,14 +24,6 @@
                                     @foreach($movement_types as $type)
                                         <option value="<?= $type->id ?>"> <?= $type->name ?> </option>
                                     @endforeach
-                                </select>
-                            </div>
-                            <div class="form-group p-2">
-                                <label for="inputMovementType">Category</label>
-                                <select name="type" id="inputMovementType" class="form-control">
-                                    <option disabled selected> -- select an option -- </option>
-                                    <option value="revenue">Revenue</option>
-                                    <option value="expense">Expense</option>
                                 </select>
                             </div>
                             <div class="form-group p-2">
@@ -45,6 +37,14 @@
                             <div class="form-group p-2">
                                 <label for="inputDescription">Description</label>
                                 <textarea class="form-control" name="description" id="inputDescription" rows="3"></textarea>
+                            </div>
+                            <div class="form-group p-2">
+                                <label for="inputDocument">Document</label>
+                                <input type="file" class="form-control" name="document_file" id="inputDocument"/>
+                            </div>
+                            <div class="form-group p-2">
+                                <label for="inputDocumentDescription">Document Description</label>
+                                <textarea class="form-control" name="document_description" id="inputDocumentDescription" rows="3"></textarea>
                             </div>
                             <div class="form-group d-flex justify-content-center">
                                 <button type="submit" class="btn btn-success" name="ok">Create</button>

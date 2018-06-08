@@ -33,7 +33,7 @@ class AccountPolicy
     }
 
     public function createAccount(User $user) {
-        return $user == Auth::user();
+        return $user == Auth::user()->id;
     }
 
     public function editAccount(User $user, Account $account) {
