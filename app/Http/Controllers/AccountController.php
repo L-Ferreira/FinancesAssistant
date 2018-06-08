@@ -15,6 +15,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use function PHPSTORM_META\type;
+use function Tests\Feature\to_cents;
 
 
 class AccountController extends Controller
@@ -201,14 +202,11 @@ class AccountController extends Controller
         if (is_null($account->last_movement_date)) {
             $account->current_balance = $data['start_balance'];
         } else {
-            $account->current_balance = $account->current_balance+($data['start_balance'] - $account->start_balance);
+            //$account->current_balance = $account->current_balance+($data['start_balance'] - $account->start_balance);
             $movements = Movement::query()->where('account_id', '=', $account->id)->orderBy('created_at')->get();
-            $newMovements = $this->recalculateMovementsBalance($movements, $data['start_balance']);
-            foreach ($newMovements as $mov) {
-                DB::table('movements')->where('id', '=', $mov->id)->orderBy('created_at')->update(['start_balance' => $mov->start_balance, 'end_balance' => $mov->end_balance]);
-            }
-        }
 
+            $account->current_balance = $this->recalculateMovementsBalance($movements, $data['start_balance']);
+        }
 
         $account->owner_id = Auth::user()->id;
         $account->account_type_id = $data['account_type_id'];
@@ -226,22 +224,26 @@ class AccountController extends Controller
 
     private function recalculateMovementsBalance($movements, $startBalance)
     {
-        $numberOfMovs = count($movements) - 1;
-        $movements[0]->start_balance = $startBalance;
-        if ($movements[0]->type == 'expense')
-            $movements[0]->end_balance = $movements[0]->start_balance - $movements[0]->value;
-        elseif ($movements[0]->type == 'revenue')
-            $movements[0]->end_balance = $movements[0]->start_balance + $movements[0]->value;
-
-        for ($i = 1; $i <= $numberOfMovs; $i++) {
-            $movements[$i]->start_balance = $movements[$i - 1]->end_balance;
-            if ($movements[$i]->type == 'expense')
-                $movements[$i]->end_balance = $movements[$i]->start_balance - $movements[$i]->value;
-            elseif ($movements[$i]->type == 'revenue')
-                $movements[$i]->end_balance = $movements[$i]->start_balance + $movements[$i]->value;
+        $movs_end_balance = $startBalance;
+        foreach ($movements as $movement) {
+            $movement->start_balance = $movs_end_balance;
+            $movement->start_balance = ($this->to_cents($movement->start_balance))/100;
+            if ($movement->type == "expense") {
+                $movement->end_balance = $movement->start_balance - $movement->value;
+            } else {
+                $movement->end_balance = $movement->start_balance + $movement->value;
+            }
+            $movs_end_balance = $movement->end_balance;
+            $movement->end_balance = ($this->to_cents($movement->end_balance))/100;
+            $movement->save();
         }
 
-        return $movements;
+        return $movs_end_balance;
+
+    }
+    private function to_cents($value)
+    {
+        return bcmul($value, 100, 0);
     }
 }
 
