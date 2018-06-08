@@ -6,7 +6,6 @@ use App\Account;
 use App\Document;
 use App\Http\Requests\DocumentRequest;
 use App\Movement;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
@@ -49,15 +48,20 @@ class DocumentController extends Controller
         $data = $request->validated();
 
         if($request->hasFile('document_file') && $request->file('document_file')->isValid()){
+
+            if ($movement->document_id != null) {
+                Storage::delete('documents/'.$movement->account_id . $movement->id);
+                $document = Document::find($movement->document_id);
+            } else {
+                $document = new Document();
+            }
             $type = $data['document_file']->getClientOriginalExtension();
-            $document = new \App\Document();
+
             $document->type =$type;
             $document->original_name = $request->file('document_file')->getClientOriginalName();
+            //$filename = $request->file('document_file')->getClientOriginalName();
             $document->description = $data['document_description'];
 
-            if ($movement->document_id != null ) {
-                Storage::delete('documents/'.$movement->account_id . $movement->id);
-            }
             Storage::putFileAs('documents/'.$movement->account_id, $request->file('document_file'), $movement->id.'.'.$type);
 
             $document->save();

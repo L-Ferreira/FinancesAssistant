@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use function PHPSTORM_META\type;
 use PhpParser\Comment\Doc;
 
@@ -82,18 +83,23 @@ class MovementController extends Controller
         $newMovement->type = $movement_types->type;
         $newMovement->save();
 
+        if($request->hasFile('document_file') && $request->file('document_file')->isValid()){
+            $type = $data['document_file']->getClientOriginalExtension();
+            $document = new Document();
+            $document->type =$type;
+            $document->original_name = $request->file('document_file')->getClientOriginalName();
+            $document->description = $data['document_description'] ?? null;
+
+            Storage::putFileAs('documents/'.$newMovement->account_id, $request->file('document_file'), $newMovement->id.'.'.$type);
+
+            $document->save();
+
+            $newMovement->document_id = $document->id ?? null;
+            $newMovement->save();
+        }
+
         $account->last_movement_date = $data['date'];
         $account->save();
-
-
-        /*
-         *
-         *  INSERIR CODIGO DO DOCUMENTO
-         *
-         *
-        */
-
-
 
         return redirect()
             ->route('showAccounts', Auth::user())
@@ -125,21 +131,33 @@ class MovementController extends Controller
         $movement->value = $data['value'];
         $movement->description = $data['description'] ?? null;
         $movement->type = $movement_types->type;
+
+        if($request->hasFile('document_file') && $request->file('document_file')->isValid()){
+
+            if ($movement->document_id != null) {
+                Storage::delete('documents/'.$movement->account_id . $movement->id);
+                $document = Document::find($movement->document_id);
+            } else {
+                $document = new Document();
+            }
+
+            $type = $data['document_file']->getClientOriginalExtension();
+            $document->type =$type;
+            $document->original_name = $request->file('document_file')->getClientOriginalName();
+            $document->description = $data['document_description'] ?? null;
+
+
+            Storage::putFileAs('documents/'.$movement->account_id, $request->file('document_file'), $movement->id.'.'.$type);
+
+            $document->save();
+
+            $movement->document_id = $document->id ?? null;
+        }
+
         $movement->save();
 
         $account->last_movement_date = $data['date'];
         $account->save();
-
-
-
-        /*
-         *
-         *  INSERIR CODIGO DO DOCUMENTO
-         *
-         *
-        */
-
-
 
         return redirect()
             ->route('showAccounts', Auth::user())
@@ -149,16 +167,15 @@ class MovementController extends Controller
     public function destroy(Movement $movement){
 //        $this->authorize('delete',$movement);
         $account = Account::findOrFail($movement->account_id);
-//        $file = Document::findOrFail($movement->file_id);
-        $count = Movement::query()->where('account_id','=',$movement->id)->count();
 
+      
         if(Auth::user()->admin || Auth::user()->id == $account->owner_id ) {
-            if ($count == 0) {
-                return response(view('errors.404'), 404);
-            } else {
-                $movement->delete();
-//                $file->delete();
+            if ($movement->document_id != null) {
+                $document = Document::find($movement->document_id);
+                $document->delete();
+                Storage::delete('documents/'.$movement->account_id.'/'.$movement->id.'.'.$document->type,$document->original_name);
             }
+            $movement->delete();
         }else {
             return response(view('errors.403'),403);
         }
