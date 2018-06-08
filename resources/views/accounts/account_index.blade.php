@@ -20,7 +20,7 @@
                             <td>{{ $account->code}}</td>
                             <td>{{ $account->name}}</td>
                             <td>{{ $account->current_balance }}</td>
-                            @if($account->owner_id == Auth::user()->id)
+                            @if($account->owner_id == Auth::user()->id )
                                 <div class="d-flex justify-content-around">
                                     <td class="d-flex">
                                         @if( is_null($account->last_movement_date))

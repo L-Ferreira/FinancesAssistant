@@ -82,3 +82,8 @@ Route::get('/movement/{movement}','MovementController@edit')->name('movement.edi
 Route::put('/movement/{movement}','MovementController@update')->name('movement.update');
 //DELETE MOVEMENT
 Route::delete('/movement/{movement}', 'MovementController@destroy')->name('movement.destroy');
+//ADD DOCUMENT
+Route::get('/documents/{movement}','DocumentController@document')->name('document.document');
+Route::post('/documents/{movement}','DocumentController@associateDocument')->name('document.associateDocument');
+//DELETE DOCUMENT OR DISASSOCIATE
+Route::get('/document/{document}', 'DocumentController@viewDocument')->name('document.viewDocument');

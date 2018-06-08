@@ -50,8 +50,6 @@
                                 <button type="submit" class="btn btn-success" name="ok">Create</button>
                                 <a class="btn btn-default " href="{{route('showAccounts',  Auth::user()->id)}}">Cancel</a>
                             </div>
-
-
                         </form>
                     </div>
                 </div>

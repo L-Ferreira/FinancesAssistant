@@ -28,14 +28,28 @@
                         <td>
                             <div class="input-group">
                                 <form  method="GET" action="{{route('movement.edit', $movement->id)}}">
-                                    <button class="btn-danger list-inline" type="submit" role="button">Edit</button>
+                                    @csrf
+                                    <button class="btn btn-primary list-inline" type="submit" role="button">Edit</button>
                                 </form>
-                                <div class="input-group-btn">
-                                    <form  method="POST" action="{{route('movement.destroy', $movement->id)}}">
-                                        <button class="btn-danger list-inline" type="submit" role="button">Delete</button>
-                                    </form>
-                                </div>
+                                <form  method="POST" action="{{route('movement.destroy', $movement->id)}}">
+                                    @csrf
+                                    <button class=" btn btn-danger list-inline" type="submit" role="button">Delete</button>
+                                </form>
+                                @if(is_null($movement->document_id))
+                                    <a type="button" class="btn btn-primary"  href="{{route('document.document',$movement->id)}}">Associate Document</a>
+                                @endif
+                                @if(!is_null($movement->document_id))
+                                    <a type="button" class="btn btn-primary"  href="{{route('document.document',$movement->id)}}">Replace Document</a>
+                                    <a type="button" class="btn btn-primary"  href="{{route('document.viewDocument',$movement->document_id)}}">Download</a>
+                                    {{--<form action="{{route('document.destroy',$movement->document_id)}}" method="POST" role="form" class="inline">--}}
+                                        {{--@method('delete')--}}
+                                        {{--@csrf--}}
+                                        {{--<button type="submit" class="btn btn-xs btn-danger">Disassociate</button>--}}
+                                    {{--</form>--}}
+                                @endif
                             </div>
+                        </td>
+                        <td>
                         </td>
                     </tr>
                 @endforeach

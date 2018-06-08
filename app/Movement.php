@@ -31,6 +31,7 @@ class Movement extends Model
         'account_id', 'movement_category_id', 'value', 'description'
     ];
 
-
-
+    public  function account(){
+        return $this->belongsTo('App\Account');
+    }
 }

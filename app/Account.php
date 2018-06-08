@@ -27,4 +27,8 @@ class Account extends Model
     protected $fillable = [
         'account_type_id', 'code', 'start_balance', 'date', 'description'
     ];
+
+    public function user(){
+        return $this->belongsTo('App\User','owner_id');
+    }
 }

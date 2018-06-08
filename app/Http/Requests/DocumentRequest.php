@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\GreaterThanRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateMovementRequest extends FormRequest
+class DocumentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,12 +24,9 @@ class UpdateMovementRequest extends FormRequest
     public function rules()
     {
         return [
-            'movement_category_id' => 'required|integer|exists:movement_categories,id',
-            'value' => [new GreaterThanRule(), 'required','numeric'],
-            'date' => 'required|date|before:now',
-            'description' => 'nullable|string',
-            'document_file' => 'required_with:document_description|mimes:jpg,png,pdf',
+            'document_file' => 'required|file|mimes:pdf,png,jpeg|required_with:document_description',
             'document_description' => 'nullable|string',
+            //
         ];
     }
 }

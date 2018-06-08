@@ -5,14 +5,17 @@ namespace App\Http\Controllers;
 use App\Account;
 use App\Document;
 use App\Http\Requests\CreateMovementRequest;
+use App\Http\Requests\DocumentRequest;
 use App\Http\Requests\UpdateMovementRequest;
 use App\Movement;
 use App\Movement_category;
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use function PHPSTORM_META\type;
+use PhpParser\Comment\Doc;
 
 class MovementController extends Controller
 {

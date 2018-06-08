@@ -30,9 +30,14 @@ class AccountController extends Controller
         $count = User::query()->where('id','=',$user)->count();
 
         if($count > 0){
-            $accounts = Account::join('account_types','account_types.id','=','accounts.account_type_id')
-                ->select('accounts.*', 'account_types.name')
-                ->where('accounts.owner_id','=',$user)->get();
+//            if(Auth::user()->admin){
+//                $accounts = Account::join('account_types','account_types.id','=','accounts.account_type_id')
+//                    ->select('accounts.*', 'account_types.name')->get();
+//            }else{
+                $accounts = Account::join('account_types','account_types.id','=','accounts.account_type_id')
+                    ->select('accounts.*', 'account_types.name')
+                    ->where('accounts.owner_id','=',$user)->get();
+//            }
         }else{
             return response(view('errors.404'),404);
         }

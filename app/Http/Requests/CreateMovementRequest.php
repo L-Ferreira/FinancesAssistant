@@ -30,7 +30,7 @@ class CreateMovementRequest extends FormRequest
             'value' => [new GreaterThanRule(), 'required','numeric'],
             'date' => 'required|date|before:now',
             'description' => 'nullable|string',
-            'document_file' => 'nullable|mimes:jpg,png,pdf',
+            'document_file' => 'required_with:document_description|mimes:jpg,png,pdf',
             'document_description' => 'nullable|string',
         ];
     }
