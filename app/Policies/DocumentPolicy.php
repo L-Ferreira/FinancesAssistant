@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Account;
 use App\Document;
 use App\Movement;
 use App\User;
@@ -21,7 +22,7 @@ class DocumentPolicy
         //
     }
 
-    public function delete(Movement $movement, Document $document) {
-        return $movement->document_id == $document->id;
+    public function deleteDocument(Movement $movement, Account $account) {
+        return $account->id == $movement->account_id;
     }
 }

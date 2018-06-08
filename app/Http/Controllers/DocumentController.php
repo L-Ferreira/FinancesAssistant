@@ -6,6 +6,7 @@ use App\Account;
 use App\Document;
 use App\Http\Requests\DocumentRequest;
 use App\Movement;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
@@ -52,10 +53,9 @@ class DocumentController extends Controller
             $document = new \App\Document();
             $document->type =$type;
             $document->original_name = $request->file('document_file')->getClientOriginalName();
-            //$filename = $request->file('document_file')->getClientOriginalName();
             $document->description = $data['document_description'];
 
-            if ($movement->document_id != null) {
+            if ($movement->document_id != null ) {
                 Storage::delete('documents/'.$movement->account_id . $movement->id);
             }
             Storage::putFileAs('documents/'.$movement->account_id, $request->file('document_file'), $movement->id.'.'.$type);
@@ -98,38 +98,27 @@ class DocumentController extends Controller
         return Response::make(view('movements.movements_index',compact('movements','error')),403);
     }
 
-//    public function destroy(Document $document){
-//
-//        dd("cona");
-//        $movement = Movement::query()->where('document_id','=',$document->id)->first();
-//        $account = Account::query()->where('id','=',$movement->account_id)->first();
-//        $movements = Movement::query()->where('account_id','=',$account->id)->get();
-////
-////        $movement->document_id = NULL;
-////
-////        $this->authorize('delete',$document);
-////
-////        $count = Movement::query()->where('account_id','=',$account->id)->count();
-////
-////        if(!Auth::user()->admin || Auth::user()->admin) {
-////            if ($count == 0 && is_null($account->last_movement_date)) {
-////
-////                $account->delete();
-////            } else {
-////                return response(view('errors.403'), 403);
-////            }
-////        }else {
-////            return response(view('errors.403'),403);
-////
-////        }
-////
-////        if(Auth::user()->id == $account->owner_id){
-////            Storage::delete('documents/'.$movement->account_id . $movement->id);
-////        }
-//
-//
-//
-//        return view('movements.movements_index',compact('movements'));
-//    }
+    public function destroy(Document $document){
+
+        $movement = Movement::query()->where('document_id','=',$document->id)->first();
+        $account = Account::find($movement->account_id);
+        $movements = Movement::query()->where('account_id','=',$account->id)->get();
+
+        $count = Movement::query()->where('document_id','=',$document->id)->count();
+
+        if(Auth::user()->admin =! 0 || Auth::user()->admin == 1 || Auth::user()->id == $account->owner_id) {
+            if ($count > 0) {
+                $movement->document_id = null;
+                $movement->save();
+                $document->delete();
+                Storage::delete('documents/'.$movement->account_id.'/'.$movement->id.'.'.$document->type,$document->original_name);
+            } else {
+                return response(view('errors.403'), 403);
+            }
+        }else {
+            return response(view('errors.403'),403);
+        }
+        return redirect()->back();
+    }
 
 }

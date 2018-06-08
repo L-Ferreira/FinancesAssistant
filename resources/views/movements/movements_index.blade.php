@@ -41,11 +41,14 @@
                                 @if(!is_null($movement->document_id))
                                     <a type="button" class="btn btn-primary"  href="{{route('document.document',$movement->id)}}">Replace Document</a>
                                     <a type="button" class="btn btn-primary"  href="{{route('document.viewDocument',$movement->document_id)}}">Download</a>
-                                    {{--<form action="{{route('document.destroy',$movement->document_id)}}" method="POST" role="form" class="inline">--}}
-                                        {{--@method('delete')--}}
-                                        {{--@csrf--}}
-                                        {{--<button type="submit" class="btn btn-xs btn-danger">Disassociate</button>--}}
-                                    {{--</form>--}}
+                                    @if(Auth::user()->id == $account->owner_id)
+                                        <form action="{{route('document.destroy',$movement->document_id)}}" method="POST" role="form" class="inline">
+                                            @method('delete')
+                                            @csrf
+                                            <button type="submit" class="btn btn-xs btn-danger">Disassociate</button>
+                                        </form>
+                                    @endif
+
                                 @endif
                             </div>
                         </td>

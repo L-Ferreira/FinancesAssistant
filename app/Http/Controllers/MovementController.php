@@ -50,7 +50,7 @@ class MovementController extends Controller
         }
 
 
-        return view('movements.movements_index', compact('pageTitle', 'movements'));
+        return view('movements.movements_index', compact('pageTitle', 'movements','account'));
     }
 
     public function create(User $user, Account $account) {
