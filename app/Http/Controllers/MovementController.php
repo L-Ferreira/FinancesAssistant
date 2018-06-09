@@ -134,19 +134,16 @@ class MovementController extends Controller
 
         if($request->hasFile('document_file') && $request->file('document_file')->isValid()){
 
+            $type = $data['document_file']->getClientOriginalExtension();
             if ($movement->document_id != null) {
-                Storage::delete('documents/'.$movement->account_id . $movement->id);
                 $document = Document::find($movement->document_id);
+                Storage::delete('documents/'.$movement->account_id.'/'.$movement->id.'.'.$document->type,$document->original_name);
             } else {
                 $document = new Document();
             }
-
-            $type = $data['document_file']->getClientOriginalExtension();
-            $document->type =$type;
             $document->original_name = $request->file('document_file')->getClientOriginalName();
             $document->description = $data['document_description'] ?? null;
-
-
+            $document->type = $type;
             Storage::putFileAs('documents/'.$movement->account_id, $request->file('document_file'), $movement->id.'.'.$type);
 
             $document->save();
@@ -158,6 +155,7 @@ class MovementController extends Controller
 
         $account->last_movement_date = $data['date'];
         $account->save();
+
 
         return redirect()
             ->route('showAccounts', Auth::user())

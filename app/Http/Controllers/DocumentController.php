@@ -50,8 +50,8 @@ class DocumentController extends Controller
         if($request->hasFile('document_file') && $request->file('document_file')->isValid()){
 
             if ($movement->document_id != null) {
-                Storage::delete('documents/'.$movement->account_id . $movement->id);
                 $document = Document::find($movement->document_id);
+                Storage::delete('documents/'.$movement->account_id.'/'.$movement->id.'.'.$document->type,$document->original_name);
             } else {
                 $document = new Document();
             }
