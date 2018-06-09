@@ -28,7 +28,6 @@ class UserController extends Controller
 //        $this->middleware('auth');
     }
 
-
     public function showInitialStatistics(){
 
         $results_users= User::all()->count();
@@ -40,7 +39,6 @@ class UserController extends Controller
 
         return view('welcome',compact('results_users','results_accounts','results_movements'));
     }
-
 
     public function myProfile()
     {
@@ -117,7 +115,6 @@ class UserController extends Controller
             ->with('success', 'User saved successfully');
 
     }
-
 
     public function associates()
     {
@@ -197,5 +194,32 @@ class UserController extends Controller
         $user->save();
         return redirect()->back()->with('success', 'User demoted with success!');
     }
+
+    public function makeAssociate(Request $request) {
+
+        $this->validate($request, [
+            'associated_user' => 'required|exists:users,email',
+        ]);
+
+        $user = User::where('email', '=', $request->associated_user)->first();
+        $associate_member = new AssociateMember();
+        $associate_member->main_user_id = Auth::user()->id;
+        $associate_member->associated_user_id = $user->id;
+        $associate_member->save();
+
+        return redirect()->route('me.associates')->with('success', 'User associated with success!');
+    }
+
+    public function removeAssociate($id)
+    {
+        $user = User::findOrFail($id);
+        $associate_member = AssociateMember::where([['associated_user_id', '=', $user->id],['main_user_id', '=', Auth::user()->id]])->delete();
+        if ($associate_member == null) {
+            return response(view('errors.404'),404);
+        }
+        return redirect()->route('me.associates')->with('success', 'User removed with success!');
+
+    }
+
 
 }

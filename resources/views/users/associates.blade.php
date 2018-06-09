@@ -1,6 +1,9 @@
 @extends('users.profile')
 
 @section('content')
+    @if ($errors->any())
+        @include('partials.errors')
+    @endif
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-10 col-md-offset-1 ">
@@ -35,6 +38,8 @@
                                 <th scope="col">Profile</th>
                                 @if(Route::current()->getName() == 'me.associateOf')
                                     <th scope="col">Accounts</th>
+                                @elseif(Route::current()->getName() == 'me.associates')
+                                    <th scope="col">Action</th>
                                 @endif
                             </tr>
                             </thead>
@@ -51,17 +56,42 @@
                                         {{$user->email}}
                                     </td>
                                     <td style="width: 200px">
-                                        <a class="btn btn-xs btn-primary" href="{{route('usersProfile', $user->id)}}" style="width: 200px">Show Profile</a>
+                                        <a class="btn btn-xs btn-primary" href="{{route('usersProfile', $user->id)}} " style="width: 200px">Show Profile</a>
                                     </td>
                                     @if(Route::current()->getName() == 'me.associateOf')
                                         <td>
                                             <a class="btn btn-xs btn-primary" href="{{route('showAccounts', $user->id)}}" style="width: 200px">User's Accounts</a>
                                         </td>
                                     @endif
+                                    <td>
+                                        <form action="{{route('me.removeAssociate', $user->id)}}" method="POST" role="form" >
+                                            @method('delete')
+                                            @csrf
+                                            <button type="submit" class="btn btn-xs btn-danger">Remove</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             @endforeach
                             </tbody>
                         </table>
+                            @if(Route::current()->getName() == 'me.associates')
+                                <div class="p-2">
+                                    <form action="{{route('me.associates')}}" method="post" class="form-group" enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="d-flex flex-row align-items-center form-group">
+                                            <div class="p-2">
+                                                <label for="inputAssociatedUser">Associate a user: </label>
+                                            </div>
+                                            <div class="p-2" style="width: 620px">
+                                                <input type="text" class="form-control" name="associated_user" id="inputAssociatedUser" placeholder="Enter user email"/>
+                                            </div>
+                                            <div class="ml-auto p-2">
+                                                <button type="submit" class="btn btn-success" name="ok">Associate</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            @endif
                     </div>
 
                     <div class="card-footer">

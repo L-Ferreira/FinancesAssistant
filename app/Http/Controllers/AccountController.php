@@ -153,8 +153,7 @@ class AccountController extends Controller
 
         return redirect()->route('showAccounts', Auth::user())->with('success','Account reopen');
     }
-
-
+    
     public function create() {
         //$this->authorize('createAccount', $user);
 

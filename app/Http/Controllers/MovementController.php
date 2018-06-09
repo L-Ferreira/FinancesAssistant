@@ -72,13 +72,19 @@ class MovementController extends Controller
 
         $movement_types = Movement_category::find($data['movement_category_id']);
 
+        $new_mov_balance = Movement::query()->where([['account_id', '=', $account->id],['date', '<=', $data['date']]])->latest()->first();
         $newMovement = new Movement();
         $newMovement->account_id = $account->id;
         $newMovement->movement_category_id = $data['movement_category_id'];
         $newMovement->date = $data['date'];
         $newMovement->value = $data['value'];
-        $newMovement->start_balance = $data['value'];
-        $newMovement->end_balance = $data['value'];
+        if ($new_mov_balance != null) {
+            $newMovement->start_balance = $new_mov_balance->end_balance;
+            $newMovement->end_balance = $new_mov_balance->end_balance+$data['value'];
+        } else {
+            $newMovement->start_balance = 0;
+            $newMovement->end_balance =  $newMovement->start_balance+$data['value'];
+        }
         $newMovement->description = $data['description'] ?? null;
         $newMovement->type = $movement_types->type;
         $newMovement->save();
@@ -98,6 +104,9 @@ class MovementController extends Controller
             $newMovement->save();
         }
 
+        $movements_to_recalculate = Movement::query()->where([['account_id', '=', $account->id],['date', '>=', $data['date']]])->orderBy('date')->get();
+
+        $account->current_balance = $this->recalculateMovementsBalance($movements_to_recalculate,($newMovement->end_balance));
         $account->last_movement_date = $data['date'];
         $account->save();
 
@@ -118,7 +127,6 @@ class MovementController extends Controller
     }
 
     public function update(UpdateMovementRequest $request, Movement $movement) {
-
 
         $account = Account::findOrFail($movement->account_id);
 
@@ -160,6 +168,31 @@ class MovementController extends Controller
         return redirect()
             ->route('showAccounts', Auth::user())
             ->with('success', 'Movement created successfully');
+    }
+
+    private function recalculateMovementsBalance($movements, $value)
+    {
+        $movs_end_balance = $value;
+
+        foreach ($movements as $movement) {
+            $movement->start_balance = $movs_end_balance;
+            $movement->start_balance = ($this->to_cents($movement->start_balance))/100;
+            if ($movement->type == "expense") {
+                $movement->end_balance = $movement->start_balance - $movement->value;
+            } else {
+                $movement->end_balance = $movement->start_balance + $movement->value;
+            }
+            $movs_end_balance = $movement->end_balance;
+            $movement->end_balance = ($this->to_cents($movement->end_balance))/100;
+            $movement->save();
+        }
+        return $movs_end_balance;
+
+    }
+
+    private function to_cents($value)
+    {
+        return bcmul($value, 100, 0);
     }
 
     public function destroy(Movement $movement){

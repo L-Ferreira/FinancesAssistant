@@ -45,6 +45,8 @@ Route::patch('/me/password', 'UserController@updatePassword')->name('me.updatePa
 
 //ASSOCIATES
 Route::get('/me/associates','UserController@associates')->name('me.associates')->middleware('auth');
+Route::post('/me/associates','UserController@makeAssociate')->name('me.makeAssociate')->middleware('auth');
+Route::delete('/me/associates/{user}', 'UserController@removeAssociate')->name('me.removeAssociate')->middleware('auth');
 //ASSOCIATES-OF
 Route::get('/me/associate-of','UserController@associateOf')->name('me.associateOf')->middleware('auth');
 //USERS PROFILES
