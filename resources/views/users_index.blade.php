@@ -39,6 +39,7 @@
                     @endforeach
                 </tbody>
             </table>
+            {{ $users->links() }}
         @else
             <div class="align-content-center">
                 <h2>No users found</h2>

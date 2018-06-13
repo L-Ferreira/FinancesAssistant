@@ -84,11 +84,20 @@ Route::get('/movement/{movement}','MovementController@edit')->name('movement.edi
 Route::put('/movement/{movement}','MovementController@update')->name('movement.update');
 //DELETE MOVEMENT
 Route::delete('/movement/{movement}', 'MovementController@destroy')->name('movement.destroy');
+
+
+
 //ADD DOCUMENT
 Route::get('/documents/{movement}','DocumentController@document')->name('document.document');
 Route::post('/documents/{movement}','DocumentController@associateDocument')->name('document.associateDocument');
-
+//VIEW DOCUMENT
 Route::get('/document/{document}', 'DocumentController@viewDocument')->name('document.viewDocument');
-
 //DELETE DOCUMENT OR DISASSOCIATE
 Route::delete('/document/{document}', 'DocumentController@destroy')->name('document.destroy');
+
+
+
+//STATISTICS
+Route::get('/dashboard/{user}','StatisticsController@totalBalance')->name('statistics.totalBalance');
+Route::get('/dashboard','StatisticsController@valuesForm')->name('statistics.form');
+Route::post('/graph', 'StatisticsController@graphics')->name('statistics.with.values');

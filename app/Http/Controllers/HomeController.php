@@ -31,7 +31,6 @@ class HomeController extends Controller
     public function showUsers(Request $request)
     {
         $pageTitle = "List Users";
-        $users = User::all();
 
         $name = $request->name;
         $type = $request->type;
@@ -56,7 +55,7 @@ class HomeController extends Controller
             $query = $query->where('name', 'LIKE', '%' .$name . '%');
         }
 
-        $users = $query->get();
+        $users = $query->paginate(10);
 
         return view('admin_showUsers', compact('pageTitle', 'users'));
 
@@ -89,7 +88,7 @@ class HomeController extends Controller
             $query = $query->where('name', 'LIKE', '%' .$name . '%');
         }
 
-        $users = $query->get();
+        $users = $query->paginate(10);
 
         return view('users_index', compact('users', 'associates'));
     }

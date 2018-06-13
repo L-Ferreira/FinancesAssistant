@@ -23,20 +23,10 @@
                     </div>
 
                     <div class="card-body">
-                        @if($user == Auth::user())
                             <div class="d-flex flex-row justify-content-around align-items-center">
-                                <div class="p-2">
-                                    <a class="btn btn-xs btn-primary" href="{{route('me.associates')}}">My Associates</a>
-                                </div>
-                                <div class="p-2">
-                                    <a class="btn btn-xs btn-primary" href="{{route('me.associateOf')}}">Associate Of</a>
-                                </div>
-                                <div>
-                                    <a class="btn btn-xs btn-primary" href="{{route('account.create')}}">Create account</a>
-                                </div>
+                                <a  class="btn btn-primary" href="{{ route('showAccounts',$user) }}">Show User's Accounts</a>
                             </div>
-                            @yield('content')
-                        @endif
+
                     </div>
                     <div class="card-footer">
 

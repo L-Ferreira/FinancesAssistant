@@ -1,4 +1,4 @@
-@extends('users.profile')
+@extends('home')
 
 @section('content')
     @if ($errors->any())
@@ -76,14 +76,16 @@
                         </table>
                             @if(Route::current()->getName() == 'me.associates')
                                 <div class="p-2">
-                                    <form action="{{route('me.associates')}}" method="post" class="form-group" enctype="multipart/form-data">
+                                    <form action="{{route('me.makeAssociate')}}" method="post" class="form-group" enctype="multipart/form-data">
                                         @csrf
                                         <div class="d-flex flex-row align-items-center form-group">
                                             <div class="p-2">
                                                 <label for="inputAssociatedUser">Associate a user: </label>
                                             </div>
                                             <div class="p-2" style="width: 620px">
-                                                <input type="text" class="form-control" name="associated_user" id="inputAssociatedUser" placeholder="Enter user email"/>
+                                                <input type="email" class="form-control" name="associated_user" id="inputAssociatedUser" placeholder="Enter user email"/>
+
+                                                {{--<input type="text" class="form-control" name="associated_user" id="inputAssociatedUser" placeholder="Enter user id"/>--}}
                                             </div>
                                             <div class="ml-auto p-2">
                                                 <button type="submit" class="btn btn-success" name="ok">Associate</button>
@@ -91,6 +93,7 @@
                                         </div>
                                     </form>
                                 </div>
+
                             @endif
                     </div>
 

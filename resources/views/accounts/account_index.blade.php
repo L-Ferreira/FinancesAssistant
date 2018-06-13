@@ -7,7 +7,8 @@
             <a  class="btn btn-primary" href="{{ route('showAccounts',Auth::user()) }}" id="all" >All Accounts</a>
             <a  class="btn btn-primary" href="{{ route('account.opened',Auth::user()) }}" id="opened" >Opened Accounts</a>
             <a  class="btn btn-primary" href="{{ route('account.closed',Auth::user()) }}" id="closed">Closed Accounts </a>
-            <table class="table table-striped">
+
+        <table class="table table-striped">
                 <thead>
                 <tr>
                     <th>Code</th>
@@ -66,17 +67,17 @@
                                                 <a class="btn btn-primary" href="{{ route('account.movement', $account->id) }}" id="movements" >SeeMovements</a>
                                             </div>
                                         @endif
-                                            @if(Auth::user())
-                                        <div class="p-2">
-                                            <a type="button" class="btn btn-xs btn-success" href="{{ route('movement.create', $account->id) }}">Create Movement</a>
-                                        </div>
-                                                @endif
+                                        @if(Auth::user())
+                                            <div class="p-2">
+                                                <a type="button" class="btn btn-xs btn-success" href="{{ route('movement.create', $account->id) }}">Create Movement</a>
+                                            </div>
+                                        @endif
                                     </td>
-
                                 </div>
                             @endif
                         </tr>
                     @endforeach
             </table>
+        {{$accounts->links()}}
     </div>
 @endsection

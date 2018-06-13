@@ -9,6 +9,7 @@ use App\Http\Requests\DocumentRequest;
 use App\Http\Requests\UpdateMovementRequest;
 use App\Movement;
 use App\Movement_category;
+use App\MovementCategory;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -29,25 +30,25 @@ class MovementController extends Controller
     {
 
         $pageTitle = "List of Movements";
+        $user = User::find($account->owner_id);
+        if(Auth::user()->id == $account->owner_id || Auth::user()->isAssociateOf($user)){
+            $count = Movement::query()->where('account_id','=',$account->id)->count();
 
-        if(Auth::user()->id != $account->owner_id){
-            return response(view('errors.403'),403);
+            if($count > 0)
+            {
+    //            $movements = Movements::query()->where('account_id', '=', $account->id)->orderByDesc('created_at')->get();
+                $movements = Movement::query()->where('account_id', '=', $account->id)->orderByDesc('date')->get();
+
+                $movements = Movement::join('movement_categories','movement_categories.id','=','movements.movement_category_id')
+                    ->select('movements.*', 'movement_categories.name')
+                    ->where('movements.account_id','=',$account->id)
+                    ->orderByDesc('movements.date')->paginate(10);
+            } else {
+                return response(view('errors.404'),404);
+            }
         }
-
-        $count = Movement::query()->where('account_id','=',$account->id)->count();
-
-        if($count > 0)
-        {
-//            $movements = Movements::query()->where('account_id', '=', $account->id)->orderByDesc('created_at')->get();
-            $movements = Movement::query()->where('account_id', '=', $account->id)->orderByDesc('date')->get();
-
-            $movements = Movement::join('movement_categories','movement_categories.id','=','movements.movement_category_id')
-                ->select('movements.*', 'movement_categories.name')
-                ->where('movements.account_id','=',$account->id)
-                ->orderByDesc('movements.date')->get();
-        } else {
-            return response(view('errors.404'),404);
-
+        else {
+            return response(view('errors.403'),403);
         }
 
 
@@ -55,7 +56,7 @@ class MovementController extends Controller
     }
 
     public function create(User $user, Account $account) {
-        $movement_types = Movement_category::all();
+        $movement_types = MovementCategory::all();
         if ($account->owner_id != Auth::user()->id) {
             return response(view('errors.403'), 403);
         }
@@ -70,7 +71,7 @@ class MovementController extends Controller
         }
         $data = $request->validated();
 
-        $movement_types = Movement_category::find($data['movement_category_id']);
+        $movement_types = MovementCategory::find($data['movement_category_id']);
 
         $new_mov_balance = Movement::query()->where([['account_id', '=', $account->id],['date', '<=', $data['date']]])->latest()->first();
         $newMovement = new Movement();
@@ -118,7 +119,7 @@ class MovementController extends Controller
 
     public function edit($id) {
         $movement = Movement::findOrFail($id);
-        $movement_types = Movement_category::all();
+        $movement_types = MovementCategory::all();
         $account = Account::findOrFail($movement->account_id);
         if(Auth::user()->id != $account->owner_id || $movement->account_id != $account->id){
             return response(view('errors.403'),403);
@@ -131,8 +132,10 @@ class MovementController extends Controller
         $account = Account::findOrFail($movement->account_id);
 
         $data = $request->validated();
-
-        $movement_types = Movement_category::find($data['movement_category_id']);
+        if(Auth::user()->id != $account->owner_id || $movement->account_id != $account->id){
+            return response(view('errors.403'),403);
+        }
+        $movement_types = MovementCategory::find($data['movement_category_id']);
 
         $movement->movement_category_id = $data['movement_category_id'];
         $movement->date = $data['date'];
@@ -200,7 +203,7 @@ class MovementController extends Controller
         $account = Account::findOrFail($movement->account_id);
 
       
-        if(Auth::user()->admin || Auth::user()->id == $account->owner_id ) {
+        if(Auth::user()->id == $account->owner_id ) {
             if ($movement->document_id != null) {
                 $document = Document::find($movement->document_id);
                 $document->delete();

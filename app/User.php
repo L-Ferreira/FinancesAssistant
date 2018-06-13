@@ -52,8 +52,9 @@ class User extends Authenticatable
     public function isAssociateOf($associateUser)
     {
         $associateMembers = AssociateMember::all();
+        $user = User::find(Auth::user()->id);
         foreach ($associateMembers as $associatedMember) {
-            if ($associatedMember->associated_user_id == Auth::user()->id && $associateUser == $associatedMember->main_user_id) {
+            if ($user->id == $associatedMember->associated_user_id && $associateUser->id == $associatedMember->main_user_id) {
                 return true;
             }
         }

@@ -88,18 +88,14 @@ class DocumentController extends Controller
         $id = $document->id;
 
         $movement = Movement::query()->where('document_id','=',$id)->first();
-
-
-
         $account = Account::query()->where('id','=',$movement->account_id)->first();
         $movements = Movement::query()->where('account_id','=',$account->id)->get();
-        if(Auth::user()->id == $account->owner_id || Auth::user()->isAssociateOf($account->owner_id)){
+
+        if(Auth::user()->id == $account->owner_id || Auth::user()->isAssociateOf($account->user)){
             return Storage::download('documents/'.$movement->account_id.'/'.$movement->id.'.'.$document->type,$document->original_name);
         }
 
-    $error = "Forbidden";
-
-        return Response::make(view('movements.movements_index',compact('movements','error')),403);
+        return response(view('errors.403'), 403);
     }
 
     public function destroy(Document $document){
@@ -110,7 +106,9 @@ class DocumentController extends Controller
 
         $count = Movement::query()->where('document_id','=',$document->id)->count();
 
-        if(Auth::user()->admin =! 0 || Auth::user()->admin == 1 || Auth::user()->id == $account->owner_id) {
+        if(Auth::user()->id != $account->owner_id) {
+            return response(view('errors.403'),403);
+        }else {
             if ($count > 0) {
                 $movement->document_id = null;
                 $movement->save();
@@ -119,8 +117,6 @@ class DocumentController extends Controller
             } else {
                 return response(view('errors.403'), 403);
             }
-        }else {
-            return response(view('errors.403'),403);
         }
         return redirect()->back();
     }

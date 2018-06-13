@@ -57,6 +57,7 @@
                     </tr>
                 @endforeach
             </table>
+            {{$movements->links()}}
         @endif
     </div>
 @endsection

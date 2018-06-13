@@ -25,11 +25,10 @@ class AccountController extends Controller
         $this->middleware('auth');
     }
 
-    public function showAccounts($user){
+    public function showAccounts($id){
         $pageTitle = "List my Account";
-
-        $count = User::query()->where('id','=',$user)->count();
-
+        $user = User::find($id);
+        $count = User::query()->where('id','=',$id)->count();
         if($count > 0){
 //            if(Auth::user()->admin){
 //                $accounts = Account::join('account_types','account_types.id','=','accounts.account_type_id')
@@ -37,13 +36,13 @@ class AccountController extends Controller
 //            }else{
                 $accounts = Account::join('account_types','account_types.id','=','accounts.account_type_id')
                     ->select('accounts.*', 'account_types.name')
-                    ->where('accounts.owner_id','=',$user)->get();
+                    ->where('accounts.owner_id','=',$user->id)->paginate(10);
 //            }
         }else{
             return response(view('errors.404'),404);
         }
 
-        if($user == Auth::user()->id || Auth::user()->isAssociateOf($user)) {
+        if($user->id == Auth::user()->id || Auth::user()->isAssociateOf($user)) {
             return view('accounts.account_index', compact('pageTitle', 'accounts'));
         }else{
             return response(view('errors.403'),403);
@@ -59,7 +58,7 @@ class AccountController extends Controller
             $accounts = Account::join('account_types','account_types.id','=','accounts.account_type_id')
                 ->select('accounts.*','account_types.name')
                 ->where('accounts.owner_id','=',$user)
-                ->where('accounts.deleted_at','=',NULL)->get();
+                ->where('accounts.deleted_at','=',NULL)->paginate(10);
         }else{
             return response(view('errors.404'),404);
         }
@@ -80,7 +79,7 @@ class AccountController extends Controller
             $accounts = Account::join('account_types','account_types.id','=','accounts.account_type_id')
                 ->select('accounts.*','account_types.name')
                 ->where('accounts.owner_id','=',$user)
-                ->where('accounts.deleted_at','!=',NULL)->get();
+                ->where('accounts.deleted_at','!=',NULL)->paginate(10);
         }else{
             return response(view('errors.404'),404);
         }

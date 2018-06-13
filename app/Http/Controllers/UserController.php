@@ -119,12 +119,13 @@ class UserController extends Controller
     public function associates()
     {
         $user = Auth::user();
+        $all_users = User::all();
         $users = DB::table('users')
             ->join('associate_members', 'users.id', '=', 'associate_members.associated_user_id')
             ->select('users.*')
             ->where([['associate_members.main_user_id', '=', $user->id]])
             ->get();
-        return view('users.associates', compact('user', 'users'));
+        return view('users.associates', compact('user', 'users', 'all_users'));
     }
 
     public function associateOf()
@@ -196,14 +197,22 @@ class UserController extends Controller
     }
 
     public function makeAssociate(Request $request) {
-
+        $id = Auth::user()->id;
         $this->validate($request, [
             'associated_user' => 'required|exists:users,email',
         ]);
 
         $user = User::where('email', '=', $request->associated_user)->first();
+        $isAssociate = AssociateMember::where([['associated_user_id', '=', $user->id],['main_user_id', '=', Auth::user()->id]])->count();
+        if ($user->id == $id) {
+            return redirect()->back()->with('errors', 'Cannot associate yourself');
+        }
+        if ($isAssociate > 0) {
+            return redirect()->back()->with('errors', 'User already associated');
+        }
+
         $associate_member = new AssociateMember();
-        $associate_member->main_user_id = Auth::user()->id;
+        $associate_member->main_user_id = $id;
         $associate_member->associated_user_id = $user->id;
         $associate_member->save();
 

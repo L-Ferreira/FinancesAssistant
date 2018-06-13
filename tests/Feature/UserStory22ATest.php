@@ -1,7 +1,7 @@
 <?php
 
 namespace Tests\Feature;
-
+ini_set('memory_limit', '1024M');
 use Carbon\Carbon;
 use Carbon\now;
 use Illuminate\Foundation\Testing\RefreshDatabase;
